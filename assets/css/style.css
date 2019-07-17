@@ -1,0 +1,187 @@
+body {
+  /* font-family: "Poppins", sans-serif; */
+}
+
+.z-depth-0 {
+  box-shadow: none !important;
+}
+
+/* 2dp elevation modified*/
+.z-depth-1 {
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 3px 1px -2px rgba(0, 0, 0, 0.12),
+    0 1px 5px 0 rgba(0, 0, 0, 0.2);
+}
+
+.z-depth-1-half {
+  box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.14), 0 1px 7px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -1px rgba(0, 0, 0, 0.2);
+}
+
+/* 6dp elevation modified*/
+.z-depth-2 {
+  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14),
+    0 1px 10px 0 rgba(0, 0, 0, 0.12),
+    0 2px 4px -1px rgba(0, 0, 0, 0.3);
+}
+
+/* 12dp elevation modified*/
+.z-depth-3 {
+  box-shadow: 0 8px 17px 2px rgba(0, 0, 0, 0.14),
+    0 3px 14px 2px rgba(0, 0, 0, 0.12),
+    0 5px 5px -3px rgba(0, 0, 0, 0.2);
+}
+
+/* 16dp elevation */
+.z-depth-4 {
+  box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14),
+    0 6px 30px 5px rgba(0, 0, 0, 0.12),
+    0 8px 10px -7px rgba(0, 0, 0, 0.2);
+}
+
+/* 24dp elevation */
+.z-depth-5 {
+  box-shadow: 0 24px 38px 3px rgba(0, 0, 0, 0.14),
+    0 9px 46px 8px rgba(0, 0, 0, 0.12),
+    0 11px 15px -7px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================================= */
+/* GRADIENT COLOR */
+.green-gradient {
+  background: linear-gradient(to right, #41c7af, #54e38e) !important;
+}
+
+.orange-gradient {
+  background: linear-gradient(to right, #f78fad, #fdeb82) !important;
+}
+
+.purple-gradient {
+  background: linear-gradient(to right, #e13680, #a43ab2) !important;
+}
+
+.purple-gradient-accent-1 {
+  background: linear-gradient(to right, #e6689e, #ab63b4) !important;
+}
+
+.blue-gradient {
+  background: linear-gradient(to right, #41d8dd, #55b3ee) !important;
+}
+
+/* ============================================================= */
+
+
+/* ============================================================= */
+/* CUSTOM LOGIN BUTTON */
+.login-button {
+  /* background-color: #00c853; */
+  background: linear-gradient(to right, #41c7af, #54e38e);
+}
+
+.login-button:active,
+.login-button:focus,
+.login-button:hover {
+  background-color: #4caf50;
+}
+
+.login-page {
+  margin-top: 20vh;
+}
+
+/* ============================================================= */
+
+
+
+/* ============================================================= */
+/* CUSTOM SIDENAV Z-INDEX */
+.sticky-top {
+  z-index: 997;
+}
+
+.overlay {
+  z-index: 998;
+}
+
+.sidebar {
+  z-index: 999;
+}
+
+/* ============================================================= */
+
+
+
+/* ============================================================= */
+/* CUSTOM SIDENAV TOGGLE BUTTON */
+.btn-toggle-menu {
+  /* background-color: #ffa000; */
+  background: linear-gradient(to right, #f87ea0, #f8e36a) !important;
+  /* border-color: #ffa000; */
+  border: 2px solid linear-gradient(to right, #f87ea0, #f8e36a) !important;
+}
+
+.btn-toggle-menu:hover {
+  /* background-color: #ff6f00; */
+  background: linear-gradient(to right, #fa5383, #f8dc3c) !important;
+  /* border-color: #ff6f00; */
+  border: 2px solid linear-gradient(to right, #fa5383, #f8dc3c) !important;
+}
+
+.btn-toggle-menu:not(:disabled):not(.disabled):active {
+  background-color: #e65100;
+  border-color: #e65100;
+}
+
+/* ============================================================= */
+
+
+
+/* ============================================================= */
+/* CUSTOM CARDS */
+.card-dashboard {
+  border-radius: 3rem;
+  font-family: "Poppins", sans-serif;
+  border: 0px;
+}
+
+.card1 {
+  background: linear-gradient(to right, #e13680, #a43ab2);
+  color: white;
+}
+
+.card2 {
+  background: linear-gradient(to right, #41c7af, #54e38e);
+  color: white;
+}
+
+.card3 {
+  background: linear-gradient(to right, #41d8dd, #55b3ee);
+  color: white;
+}
+
+.log-pengguna {
+  border-radius: 25px;
+}
+
+.menu-nav {
+  margin: 0px 15px !important;
+  border-radius: 10px;
+}
+
+/* ============================================================= */
+/* CUSTOM NAVBAR ANIMATION */
+.navbar ul.navbar-nav li a:after {
+  display: block;
+  position: absolute;
+  bottom: 0px;
+  /* left: -3px; */
+  content: '';
+  width: 0;
+  height: 2px;
+  background: #fff;
+  -webkit-transition: all .5s;
+  transition: all .5s;
+}
+
+.navbar ul.navbar-nav li a:hover:after,
+.navbar ul.navbar-nav li a:focus:after {
+  width: 85%;
+}

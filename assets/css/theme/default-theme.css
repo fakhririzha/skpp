@@ -1,0 +1,53 @@
+#sidebar {
+  /* background: #66bb6a; */
+  background: linear-gradient(to right, #41c7af, #54e38e) !important;
+  color: #ffffff;
+}
+
+#dismiss {
+  background: #81c784;
+}
+
+#dismiss:hover {
+  background: #ffffff;
+  color: #81c784;
+}
+
+#sidebar .sidebar-header {
+  /* background: #4caf50; */
+  background: linear-gradient(to right, #16947d, #1fb159) !important;
+}
+
+#sidebar ul.components {
+  border-bottom: 1px solid #43a047;
+}
+
+#sidebar ul p {
+  color: #fff;
+}
+
+#sidebar ul li a:hover {
+  color: #fff;
+  background: #fff;
+}
+
+#sidebar ul li.active>a,
+a[aria-expanded="true"] {
+  color: #fff;
+  /* background: #4caf50; */
+  background: linear-gradient(to right, #16947d, #1fb159) !important;
+}
+
+ul ul a {
+  /* background: #81c784; */
+  background: linear-gradient(to right, #16947d, #1fb159) !important;
+}
+
+ul ul a:hover {
+  background: linear-gradient(to right, #41c7af, #54e38e) !important;
+  border: 2px solid #fff;
+}
+
+ul ul.list-unstyled a {
+  background: #3ca141;
+}
