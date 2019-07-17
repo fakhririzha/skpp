@@ -22,15 +22,11 @@ class AuthModel extends CI_Model
       }
       // PASSWORD FALSE
       else {
-        echo "pass false";
-        die;
         return [false, ''];
       }
     }
     // USER NOT FOUND
     else {
-      echo "user notfound";
-      die;
       return [false, ''];
     }
   }
