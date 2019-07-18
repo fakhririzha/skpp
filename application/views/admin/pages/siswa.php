@@ -100,14 +100,14 @@
       <div class="card-body">
         <?php if (isset($siswas)) : ?>
           <div class="table-responsive">
-            <table class="table" id="list-user">
-              <thead class="text-primary">
+            <table class="table" id="list-siswa">
+              <thead class="text-primary thead-dark">
                 <tr>
-                  <th rowspan="2" scope="col" class="text-center">ID</th>
-                  <th rowspan="2" scope="col" class="text-center">Username</th>
+                  <th rowspan="2" scope="col" class="text-center">No. STTB</th>
                   <th rowspan="2" scope="col" class="text-center">Nama</th>
-                  <th rowspan="2" scope="col" class="text-center">Terakhir Login</th>
-                  <th rowspan="2" scope="col" class="text-center">Jabatan</th>
+                  <th rowspan="2" scope="col" class="text-center">Kelas</th>
+                  <th rowspan="2" scope="col" class="text-center">Jenis Kelamin</th>
+                  <th rowspan="2" scope="col" class="text-center">Status</th>
                   <th colspan="2" scope="col" class="text-center">Aksi</th>
                 </tr>
                 <tr>
@@ -116,28 +116,19 @@
                 </tr>
               </thead>
               <tbody>
-                <?php foreach ($akuns as $akun) : ?>
+                <?php foreach ($siswas as $siswa) : ?>
 
                   <tr>
-                    <td class="text-center"><?= $akun->id ?></td>
-                    <td class="text-center"><?= $akun->username ?></td>
-                    <td class="text-center"><?= $akun->nama ?></td>
+                    <td class="text-center"><?= $siswa->sttb ?></td>
+                    <td class="text-center"><?= $siswa->nama ?></td>
+                    <td class="text-center"><?= $siswa->kode_kelas ?></td>
+                    <td class="text-center"><?= ucfirst($siswa->jenis_kelamin) ?></td>
+                    <td class="text-center"><?= ucfirst($siswa->status) ?></td>
                     <td class="text-center">
-                      <?= DateTime::createFromFormat("Y-m-d H:i:s", $akun->last_login)->format("d-m-Y H:i:s") ?>
-                      <?php if ($akun->status == "logged_in") : ?>
-                        <?= "(sedang aktif)" ?>
-                      <?php endif; ?>
-                    </td>
-                    <td class="text-center"><?= ucfirst($akun->jabatan) ?></td>
-                    <td class="text-center">
-                      <?php if (($this->session->jabatan == $akun->jabatan) && ($this->session->username != $akun->username)) : ?>
-                        <a class="btn btn-success text-white disabled" href="<?= base_url() ?>admin/editUser?username=<?= $akun->username ?>"><i class="fas fa-pencil-alt" aria-disabled="true"></i> Ubah</a>
-                      <?php else : ?>
-                        <a class="btn btn-success text-white" href="<?= base_url() ?>admin/editUser?username=<?= $akun->username ?>"><i class="fas fa-pencil-alt"></i> Ubah</a>
-                      <?php endif; ?>
+                      <a class="btn btn-success text-white" href="<?= base_url() ?>admin/editSiswa?sttb=<?= $siswa->sttb ?>"><i class="fas fa-pencil-alt"></i> Ubah</a>
                     </td>
                     <td class="text-center">
-                      <a class="btn btn-danger text-white" href="<?= base_url() ?>admin/hapusUser?username=<?= $akun->username ?>"><i class="fas fa-trash-alt"></i> Hapus</a>
+                      <a class="btn btn-danger text-white" href="<?= base_url() ?>admin/hapusUser?sttb=<?= $siswa->sttb ?>"><i class="fas fa-trash-alt"></i> Hapus</a>
                     </td>
                   </tr>
 

@@ -42,7 +42,7 @@ class AdminModel extends CI_Model
   }
   public function getSiswaByKelas($kelas)
   {
-    return $this->db->where("kelas", $kelas)->get("siswa")->result();
+    return $this->db->where("kode_kelas", $kelas)->get("siswa")->result();
   }
 
   // INSERT METHOD

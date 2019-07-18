@@ -102,14 +102,22 @@ class Admin extends CI_Controller
   {
     if ($this->input->post("filterKelas")) {
       $kelas = $this->input->post("kelas");
-      $data["siswas"] = $this->AdminModel->getSiswaByKelas($kelas);
+
+      $data = [
+        "kelass" => $this->AdminModel->getAllKelas(),
+        "content" => "admin/pages/siswa",
+        "cssFiles" => ["datatables.min.css"],
+        "jsFiles" => ["datatables.min.js"],
+        "siswas" => $this->AdminModel->getSiswaByKelas($kelas)
+      ];
+    } else {
+      $data = [
+        "kelass" => $this->AdminModel->getAllKelas(),
+        "content" => "admin/pages/siswa",
+        "cssFiles" => ["datatables.min.css"],
+        "jsFiles" => ["datatables.min.js"]
+      ];
     }
-    $data = [
-      "kelass" => $this->AdminModel->getAllKelas(),
-      "content" => "admin/pages/siswa",
-      "cssFiles" => ["datatables.min.css"],
-      "jsFiles" => ["datatables.min.js"]
-    ];
 
     $this->load->view('admin/index', $data);
   }

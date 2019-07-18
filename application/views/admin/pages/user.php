@@ -86,7 +86,7 @@
       <div class="card-body">
         <div class="table-responsive">
           <table class="table" id="list-user">
-            <thead class="text-primary">
+            <thead class="text-primary thead-dark">
               <tr>
                 <th rowspan="2" scope="col" class="text-center">ID</th>
                 <th rowspan="2" scope="col" class="text-center">Username</th>
