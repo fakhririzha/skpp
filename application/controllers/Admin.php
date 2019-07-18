@@ -60,7 +60,21 @@ class Admin extends CI_Controller
   public function editUser()
   {
     if ($this->input->post("editUser")) {
-      $i = 0;
+      $data = [
+        'username' => $this->input->post('username'),
+        'oldUsername' => $this->input->post('oldUsername'),
+        'password' => $this->input->post('password'),
+        'nama' => $this->input->post('nama'),
+        'jabatan' => $this->input->post('jabatan')
+      ];
+      if ($this->AdminModel->editUser($data)) {
+        $this->session->set_flashdata('suksesMsg', 'Sukses mengubah informasi user : ' . $data["username"] . '.');
+      } else if (!$this->AdminModel->editUser($data)) {
+        $this->session->set_flashdata('actionMsg', 'Username "' . $data["username"] . '" telah ada. Silahkan coba username lain.');
+      } else {
+        $this->session->set_flashdata('actionMsg', 'Gagal mengubah informasi user.');
+      }
+      redirect("admin/user");
     } else {
       $username = $this->input->get("username");
 
@@ -83,4 +97,47 @@ class Admin extends CI_Controller
     }
     redirect("admin/user");
   }
+
+  public function siswa()
+  {
+    if ($this->input->post("filterKelas")) {
+      $kelas = $this->input->post("kelas");
+      $data["siswas"] = $this->AdminModel->getSiswaByKelas($kelas);
+    }
+    $data = [
+      "kelass" => $this->AdminModel->getAllKelas(),
+      "content" => "admin/pages/siswa",
+      "cssFiles" => ["datatables.min.css"],
+      "jsFiles" => ["datatables.min.js"]
+    ];
+
+    $this->load->view('admin/index', $data);
+  }
+
+  public function addSiswa()
+  {
+    if ($this->input->post('addSiswa')) {
+      $data = [
+        'sttb' => $this->input->post('sttb'),
+        'nama' => $this->input->post('nama'),
+        'kodeKelas' => $this->input->post('kodeKelas'),
+        'jenisKelamin' => $this->input->post('jenisKelamin'),
+        'status' => $this->input->post('status')
+      ];
+      if ($this->AdminModel->addSiswa($data)) {
+        $this->session->set_flashdata('suksesMsg', 'Sukses menambahkan siswa : ' . $data["nama"] . '.');
+      } else if (!$this->AdminModel->addSiswa($data)) {
+        $this->session->set_flashdata('actionMsg', 'No. STTB "' . $data["sttb"] . '" telah ada. Silahkan coba username lain.');
+      } else {
+        $this->session->set_flashdata('actionMsg', 'Gagal menambahkan siswa.');
+      }
+      redirect("admin/siswa");
+    }
+  }
+
+  public function editSiswa()
+  { }
+
+  public function hapusSiswa()
+  { }
 }

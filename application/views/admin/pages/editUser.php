@@ -35,6 +35,7 @@
               <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" class="form-control" name="username" value="<?= $user->username ?>" required>
+                <input type="hidden" name="oldUsername" value="<?= $user->username ?>">
               </div>
             </div>
             <div class="col-md-12">

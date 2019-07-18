@@ -32,6 +32,18 @@ class AdminModel extends CI_Model
   {
     return $this->db->where("username", $u)->get("user")->row();
   }
+  public function getAllSiswa()
+  {
+    return $this->db->get("siswa")->result();
+  }
+  public function getAllKelas()
+  {
+    return $this->db->get("kelas")->result();
+  }
+  public function getSiswaByKelas($kelas)
+  {
+    return $this->db->where("kelas", $kelas)->get("siswa")->result();
+  }
 
   // INSERT METHOD
   public function addUser($data)
@@ -51,6 +63,48 @@ class AdminModel extends CI_Model
       ]);
 
       return $addUser;
+    }
+  }
+  public function addSiswa($data)
+  {
+    $checkSiswa = $this->db->where("sttb", $data["sttb"])->get("siswa");
+    if ($checkSiswa->num_rows() > 0) {
+      return false;
+    } else {
+
+      $addSiswa = $this->db->insert("siswa", [
+        "sttb" => $data["sttb"],
+        "nama" => $data["nama"],
+        "kode_kelas" => $data["kodeKelas"],
+        "jenis_kelamin" => $data["jenisKelamin"],
+        "status" => $data["status"]
+      ]);
+
+      return $addSiswa;
+    }
+  }
+
+  // UPDATE METHOD
+  public function updateUser($data)
+  {
+    $count = 0;
+    if ($data["username"] != $data["oldUsername"]) {
+      $checkUser = $this->db->where("username", $data["username"])->get("user");
+      $count = $checkUser->num_rows();
+    } else {
+      $count = 0;
+    }
+    if ($count > 0) {
+      return false;
+    } else {
+
+      $updateUser = $this->db->where("username", $data["username"])->update("user", [
+        "username" => $data["username"],
+        "nama" => $data["nama"],
+        "jabatan" => $data["jabatan"]
+      ]);
+
+      return $updateUser;
     }
   }
 
