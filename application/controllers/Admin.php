@@ -60,9 +60,16 @@ class Admin extends CI_Controller
   public function editUser()
   {
     if ($this->input->post("editUser")) {
-      $t--;
+      $i = 0;
     } else {
       $username = $this->input->get("username");
+
+      $data = [
+        "user" => $this->AdminModel->getUserByUsername($username),
+        "content" => "admin/pages/editUser"
+      ];
+
+      $this->load->view('admin/index', $data);
     }
   }
 

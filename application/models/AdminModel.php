@@ -28,6 +28,10 @@ class AdminModel extends CI_Model
   {
     return $this->db->get("user")->result();
   }
+  public function getUserByUsername($u)
+  {
+    return $this->db->where("username", $u)->get("user")->row();
+  }
 
   // INSERT METHOD
   public function addUser($data)
