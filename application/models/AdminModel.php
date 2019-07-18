@@ -49,4 +49,13 @@ class AdminModel extends CI_Model
       return $addUser;
     }
   }
+
+  // DELETE METHOD
+  public function hapusUser($username)
+  {
+    $this->db->where("username", $username)->delete("user");
+    $count = $this->db->affected_rows();
+
+    return $count;
+  }
 }

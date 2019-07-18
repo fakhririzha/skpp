@@ -59,11 +59,21 @@ class Admin extends CI_Controller
 
   public function editUser()
   {
-    $username = $this->input->get("username");
+    if ($this->input->post("editUser")) {
+      $t--;
+    } else {
+      $username = $this->input->get("username");
+    }
   }
 
-  public function deleteUser()
+  public function hapusUser()
   {
     $username = $this->input->get("username");
+    if ($this->AdminModel->hapusUser($username) > 0) {
+      $this->session->set_flashdata('suksesMsg', 'Sukses menghapus user : ' . $username . '.');
+    } else {
+      $this->session->set_flashdata('actionMsg', 'Gagal menghapus user.');
+    }
+    redirect("admin/user");
   }
 }

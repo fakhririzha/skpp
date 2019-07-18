@@ -122,11 +122,7 @@
                     <?php endif; ?>
                   </td>
                   <td class="text-center">
-                    <?php if (($this->session->jabatan == $akun->jabatan) && ($this->session->username != $akun->username)) : ?>
-                      <a class="btn btn-danger text-white disabled" href="<?= base_url() ?>admin/hapusUser?username=<?= $akun->username ?>"><i class="fas fa-trash-alt" aria-disabled="true"></i> Hapus</a>
-                    <?php else : ?>
-                      <a class="btn btn-danger text-white" href="<?= base_url() ?>admin/hapusUser?username=<?= $akun->username ?>"><i class="fas fa-trash-alt"></i> Hapus</a>
-                    <?php endif; ?>
+                    <a class="btn btn-danger text-white" href="<?= base_url() ?>admin/hapusUser?username=<?= $akun->username ?>"><i class="fas fa-trash-alt"></i> Hapus</a>
                   </td>
                 </tr>
 
