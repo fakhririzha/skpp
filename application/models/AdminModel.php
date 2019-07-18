@@ -44,6 +44,10 @@ class AdminModel extends CI_Model
   {
     return $this->db->where("kode_kelas", $kelas)->get("siswa")->result();
   }
+  public function getSiswaBySTTB($sttb)
+  {
+    return $this->db->where("sttb", $sttb)->get("siswa")->row();
+  }
 
   // INSERT METHOD
   public function addUser($data)
@@ -105,6 +109,30 @@ class AdminModel extends CI_Model
       ]);
 
       return $updateUser;
+    }
+  }
+  public function updateSiswa($data)
+  {
+    $count = 0;
+    if ($data["sttb"] != $data["oldSttb"]) {
+      $checkSiswa = $this->db->where("sttb", $data["sttb"])->get("siswa");
+      $count = $checkSiswa->num_rows();
+    } else {
+      $count = 0;
+    }
+    if ($count > 0) {
+      return false;
+    } else {
+
+      $updateSiswa = $this->db->where("sttb", $data["sttb"])->update("siswa", [
+        "sttb" => $data["sttb"],
+        "nama" => $data["nama"],
+        "kode_kelas" => $data["kodeKelas"],
+        "jenis_kelamin" => $data["jenisKelamin"],
+        "status" => $data["status"]
+      ]);
+
+      return $updateSiswa;
     }
   }
 

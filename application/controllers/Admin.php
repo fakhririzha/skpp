@@ -133,7 +133,7 @@ class Admin extends CI_Controller
         'status' => $this->input->post('status')
       ];
       if ($this->AdminModel->addSiswa($data)) {
-        $this->session->set_flashdata('suksesMsg', 'Sukses menambahkan siswa : ' . $data["nama"] . '.');
+        $this->session->set_flashdata('suksesMsg', 'Sukses menambahkan siswa : ' . $data["nama"] . ' kelas ' . $data["kodeKelas"] . '.');
       } else if (!$this->AdminModel->addSiswa($data)) {
         $this->session->set_flashdata('actionMsg', 'No. STTB "' . $data["sttb"] . '" telah ada. Silahkan coba username lain.');
       } else {
@@ -144,7 +144,36 @@ class Admin extends CI_Controller
   }
 
   public function editSiswa()
-  { }
+  {
+    if ($this->input->post("editSiswa")) {
+      $data = [
+        'sttb' => $this->input->post('sttb'),
+        'oldSttb' => $this->input->post('oldSttb'),
+        'nama' => $this->input->post('nama'),
+        'kelas' => $this->input->post('kelas'),
+        'jenisKelamin' => $this->input->post('jenisKelamin'),
+        'status' => $this->input->post('status')
+      ];
+      if ($this->AdminModel->editSiswa($data)) {
+        $this->session->set_flashdata('suksesMsg', 'Sukses mengubah informasi siswa : No. STTB' . $data["sttb"] . '.');
+      } else if (!$this->AdminModel->editSiswa($data)) {
+        $this->session->set_flashdata('actionMsg', 'No. STTB "' . $data["sttb"] . '" telah ada. Silahkan coba No. STTB lain.');
+      } else {
+        $this->session->set_flashdata('actionMsg', 'Gagal mengubah informasi siswa.');
+      }
+      redirect("admin/siswa");
+    } else {
+      $sttb = $this->input->get("sttb");
+
+      $data = [
+        "siswa" => $this->AdminModel->getSiswaBySTTB($sttb),
+        "kelass" => $this->AdminModel->getAllKelas(),
+        "content" => "admin/pages/editSiswa"
+      ];
+
+      $this->load->view('admin/index', $data);
+    }
+  }
 
   public function hapusSiswa()
   {
