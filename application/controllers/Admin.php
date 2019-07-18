@@ -38,7 +38,24 @@ class Admin extends CI_Controller
   }
 
   public function addUser()
-  { }
+  {
+    if ($this->input->post('addUser')) {
+      $data = [
+        'username' => $this->input->post('username'),
+        'password' => $this->input->post('password'),
+        'nama' => $this->input->post('nama'),
+        'jabatan' => $this->input->post('jabatan')
+      ];
+      if ($this->AdminModel->addUser($data)) {
+        $this->session->set_flashdata('suksesMsg', 'Sukses menambahkan user : ' . $data["username"] . '.');
+      } else if (!$this->AdminModel->addUser($data)) {
+        $this->session->set_flashdata('actionMsg', 'Username "' . $data["username"] . '" telah ada. Silahkan coba username lain.');
+      } else {
+        $this->session->set_flashdata('actionMsg', 'Gagal menambahkan user.');
+      }
+      redirect("admin/user");
+    }
+  }
 
   public function editUser()
   {
