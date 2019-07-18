@@ -116,4 +116,11 @@ class AdminModel extends CI_Model
 
     return $count;
   }
+  public function hapusSiswa($sttb)
+  {
+    $this->db->where("sttb", $sttb)->delete("siswa");
+    $count = $this->db->affected_rows();
+
+    return $count;
+  }
 }

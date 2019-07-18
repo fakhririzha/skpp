@@ -4,22 +4,6 @@
       <div class="card-header">
         <h4 class="card-title product-sans">Siswa terdaftar</h4>
         <hr>
-        <button class="btn btn-success" data-toggle="modal" data-target="#add-siswa-modal"><i class="fas fa-user-plus"></i> Tambah Siswa</button>
-        <hr>
-        <form action="" method="POST">
-          <div class="form-group">
-            <label for="kelas">Filter Kelas</label>
-            <select name="kelas" class="form-control custom-select" required>
-              <option selected>Pilih kelas</option>
-              <?php foreach ($kelass as $kelas) : ?>
-                <option value="<?= $kelas->kode_kelas ?>"><?= $kelas->kode_kelas ?></option>
-              <?php endforeach; ?>
-            </select>
-          </div>
-          <div class="form-group">
-            <input type="submit" class="btn btn-block btn-primary" name="filterKelas" value="Filter">
-          </div>
-        </form>
         <?php if ($this->session->suksesMsg != "") : ?>
           <hr>
           <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -36,6 +20,23 @@
             </button>
           </div>
         <?php endif; ?>
+        <hr>
+        <button class="btn btn-success" data-toggle="modal" data-target="#add-siswa-modal"><i class="fas fa-user-plus"></i> Tambah Siswa</button>
+        <hr>
+        <form action="" method="POST">
+          <div class="form-group">
+            <label for="kelas">Filter Kelas</label>
+            <select name="kelas" class="form-control custom-select" required>
+              <option selected>Pilih kelas</option>
+              <?php foreach ($kelass as $kelas) : ?>
+                <option value="<?= $kelas->kode_kelas ?>"><?= $kelas->kode_kelas ?></option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+          <div class="form-group">
+            <input type="submit" class="btn btn-block btn-primary" name="filterKelas" value="Filter">
+          </div>
+        </form>
         <hr>
         <!-- FORM UNTUK ADD SISWA -->
         <div class="modal fade" id="add-siswa-modal" tabindex="-1" role="dialog" aria-labelledby="add-siswa-modal-label" aria-hidden="true">
@@ -128,7 +129,7 @@
                       <a class="btn btn-success text-white" href="<?= base_url() ?>admin/editSiswa?sttb=<?= $siswa->sttb ?>"><i class="fas fa-pencil-alt"></i> Ubah</a>
                     </td>
                     <td class="text-center">
-                      <a class="btn btn-danger text-white" href="<?= base_url() ?>admin/hapusUser?sttb=<?= $siswa->sttb ?>"><i class="fas fa-trash-alt"></i> Hapus</a>
+                      <a class="btn btn-danger text-white" href="<?= base_url() ?>admin/hapusSiswa?sttb=<?= $siswa->sttb ?>"><i class="fas fa-trash-alt"></i> Hapus</a>
                     </td>
                   </tr>
 

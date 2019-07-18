@@ -147,5 +147,13 @@ class Admin extends CI_Controller
   { }
 
   public function hapusSiswa()
-  { }
+  {
+    $sttb = $this->input->get("sttb");
+    if ($this->AdminModel->hapusSiswa($sttb) > 0) {
+      $this->session->set_flashdata('suksesMsg', 'Sukses menghapus siswa : No. STTB ' . $sttb . '.');
+    } else {
+      $this->session->set_flashdata('actionMsg', 'Gagal menghapus siswa.');
+    }
+    redirect("admin/siswa");
+  }
 }
