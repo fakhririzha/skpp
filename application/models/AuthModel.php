@@ -30,4 +30,19 @@ class AuthModel extends CI_Model
       return [false, ''];
     }
   }
+
+  public function logout($uname = '')
+  {
+    $user_check = $this->db->query("SELECT * FROM user WHERE username='$uname'")->num_rows();
+    if ($user_check > 0) {
+      if ($this->db->query("UPDATE user SET status='inactive' WHERE username='$uname'")) {
+        // $time = time();
+        // $time = date("Y-m-d H:i:s", $time);
+        // $this->db->query("call log_user_activity('$uname', 'logout', '{$time}');");
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
 }

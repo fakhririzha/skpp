@@ -7,9 +7,9 @@ class Auth extends CI_Controller
   {
     parent::__construct();
     $this->load->model("AuthModel");
-    if ($this->session->username != "") {
-      redirect("$this->session->jabatan");
-    }
+    // if ($this->session->username !== "") {
+    //   redirect($this->session->jabatan);
+    // }
   }
   public function index()
   {
@@ -59,13 +59,27 @@ class Auth extends CI_Controller
         redirect("");
       }
     } else {
-      $captcha = $this->generate_captcha();
 
-      $this->session->set_userdata('captcha', $captcha["word"]);
-      $data["captcha"] = $captcha;
+      if ($this->session->jabatan != "") {
+        redirect($this->session->jabatan);
+      } else {
+        $captcha = $this->generate_captcha();
 
-      $this->load->view('portal/index', $data);
+        $this->session->set_userdata('captcha', $captcha["word"]);
+        $data["captcha"] = $captcha;
+
+        $this->load->view('portal/index', $data);
+      }
     }
+  }
+
+  public function logout()
+  {
+    $this->load->model("AuthModel");
+    if ($this->AuthModel->logout($this->session->username)) {
+      $this->session->sess_destroy();
+    }
+    redirect("");
   }
 
   public function generate_captcha()

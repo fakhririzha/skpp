@@ -93,7 +93,7 @@ body {
 
 /* ============================================================= */
 /* CUSTOM SIDENAV Z-INDEX */
-.sticky-top {
+/* .sticky-top {
   z-index: 997;
 }
 
@@ -103,7 +103,7 @@ body {
 
 .sidebar {
   z-index: 999;
-}
+} */
 
 /* ============================================================= */
 
@@ -168,20 +168,32 @@ body {
 
 /* ============================================================= */
 /* CUSTOM NAVBAR ANIMATION */
-.navbar ul.navbar-nav li a:after {
+/* .navbar ul.navbar-nav li a:after {
   display: block;
   position: absolute;
   bottom: 0px;
   /* left: -3px; */
-  content: '';
+  /* content: '';
   width: 0;
   height: 2px;
   background: #fff;
   -webkit-transition: all .5s;
   transition: all .5s;
-}
+} */
 
-.navbar ul.navbar-nav li a:hover:after,
+/* .navbar ul.navbar-nav li a:hover:after,
 .navbar ul.navbar-nav li a:focus:after {
   width: 85%;
+} */
+
+/* FONT-FACE */
+@font-face {
+  font-family: 'Product Sans';
+  font-style: normal;
+  font-weight: normal;
+  src: url("../webfonts/product_sans.ttf") format("truetype");
+}
+
+.product-sans {
+  font-family: 'Product Sans';
 }
