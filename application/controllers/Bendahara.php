@@ -81,6 +81,95 @@ class Bendahara extends CI_Controller
     }
   }
 
+  public function tahunan()
+  {
+    if ($this->input->post("filterKelas")) {
+      $kelas = $this->input->post("kelas");
+
+      $data = [
+        "kelass" => $this->BendaharaModel->getAllKelas(),
+        "content" => "bendahara/pages/tahunan",
+        "cssFiles" => ["datatables.min.css"],
+        "jsFiles" => ["datatables.min.js"],
+        "siswas" => $this->BendaharaModel->getSiswaByKelas($kelas)
+      ];
+    } else {
+      $data = [
+        "kelass" => $this->BendaharaModel->getAllKelas(),
+        "content" => "bendahara/pages/tahunan",
+        "cssFiles" => ["datatables.min.css"],
+        "jsFiles" => ["datatables.min.js"]
+      ];
+    }
+
+    $this->load->view('bendahara/index', $data);
+  }
+  public function bayarTahunan()
+  {
+    if ($this->input->post("bayarTahunan")) {
+      $nominal = $this->input->post("nominalBayar");
+      $nominal = str_replace("Rp ", "", $nominal);
+      $nominal = str_replace(",", "", $nominal);
+      $data = [
+        "sttb" => $this->input->post("sttb_x"),
+        "nama" => $this->input->post("nama"),
+        "tahunAkademik" => $this->input->post("tahunAkademik"),
+        "tanggal" => $this->input->post("tanggalBayar"),
+        "nominal" => $nominal,
+        "idPetugas" => $this->session->id
+      ];
+
+      if ($this->BendaharaModel->addBayarTahunan($data)) {
+        $this->session->set_flashdata('suksesMsg', 'Pembayaran iuran tahunan siswa : ' . $data["nama"] . ' dengan No. STTB ' . $data["sttb"] . ' SUKSES.');
+      } else {
+        $this->session->set_flashdata('actionMsg', 'Gagal memasukkan iuran tahunan karena nominal yang anda masukkan melebihi total tagihan.');
+      }
+      redirect("bendahara/tahunan");
+    } else {
+      $sttb = $this->input->get("sttb");
+
+      $data = [
+        "content" => 'bendahara/pages/bayarTahunan',
+        "siswa" => $this->BendaharaModel->getSiswaBySttb($sttb),
+        "jsFiles" => ["cleave.min.js"]
+      ];
+      $this->load->view('bendahara/index', $data);
+    }
+  }
+
+  public function pemasukanlainnya()
+  {
+    if ($this->input->post("addPemasukanLainnya")) {
+      $nominal = $this->input->post("nominalBayar");
+      $nominal = str_replace("Rp ", "", $nominal);
+      $nominal = str_replace(",", "", $nominal);
+      $data = [
+        "sttb" => $this->input->post("sttb_x"),
+        "nama" => $this->input->post("nama"),
+        "tahunAkademik" => $this->input->post("tahunAkademik"),
+        "tanggal" => $this->input->post("tanggalBayar"),
+        "nominal" => $nominal,
+        "idPetugas" => $this->session->id
+      ];
+
+      if ($this->BendaharaModel->addBayarTahunan($data)) {
+        $this->session->set_flashdata('suksesMsg', 'Pembayaran iuran tahunan siswa : ' . $data["nama"] . ' dengan No. STTB ' . $data["sttb"] . ' SUKSES.');
+      } else {
+        $this->session->set_flashdata('actionMsg', 'Gagal memasukkan iuran tahunan karena nominal yang anda masukkan melebihi total tagihan.');
+      }
+      redirect("bendahara/tahunan");
+    } else {
+      $sttb = $this->input->get("sttb");
+
+      $data = [
+        "content" => 'bendahara/pages/pemasukanlainnya',
+        "siswa" => $this->BendaharaModel->getSiswaBySttb($sttb),
+        "jsFiles" => ["cleave.min.js"]
+      ];
+      $this->load->view('bendahara/index', $data);
+    }
+  }
+
   public function pengeluaran()
   {
 

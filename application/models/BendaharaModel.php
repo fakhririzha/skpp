@@ -59,6 +59,31 @@ class BendaharaModel extends CI_Model
 
     return $addBayarBulanan;
   }
+
+  public function addBayarTahunan($data)
+  {
+    $billPaid = $this->db->query("SELECT SUM(nominal) AS jumlahTerbayar FROM tahunan WHERE sttb=" . $data['sttb'] . " AND tahun_akademik=" . $data['tahunAkademik'] . "")->row();
+    $totalTagihan = $this->getNominalBayar($data['sttb'])->iuran_tahunan;
+
+    if ($billPaid->jumlahTerbayar == NULL) {
+      $billPaid = 0;
+    }
+
+    if ($totalTagihan < ($billPaid + $data['nominal'])) {
+      return false;
+    } else {
+      $addBayarTahunan = $this->db->insert("tahunan", [
+        "sttb" => $data["sttb"],
+        "tahun_akademik" => $data["tahunAkademik"],
+        "tanggal" => $data["tanggal"],
+        "nominal" => $data["nominal"],
+        "id_petugas" => $data["idPetugas"]
+      ]);
+
+      return $addBayarTahunan;
+    }
+  }
+
   public function addPengeluaran($data)
   {
     $addPengeluaran = $this->db->insert("transaksi", [
