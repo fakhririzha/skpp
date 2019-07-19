@@ -1,0 +1,2 @@
+CREATE OR REPLACE VIEW vSiswaKelas AS
+SELECT s.sttb, s.nama, s.kode_kelas, s.status, k.semester, k.tahun_akademik, k.iuran_bulanan, k.iuran_tahunan FROM siswa s LEFT JOIN kelas k ON s.kode_kelas = k.kode_kelas;

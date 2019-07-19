@@ -67,6 +67,18 @@
             </a>
           </li>
           <li>
+            <a href="<?= base_url() ?>bendahara/histori">
+              <i class="now-ui-icons travel_info"></i>
+              <p>Histori Pemasukan</p>
+            </a>
+          </li>
+          <li>
+            <a href="<?= base_url() ?>bendahara/pengeluaran">
+              <i class="now-ui-icons shopping_cart-simple"></i>
+              <p>Pengeluaran</p>
+            </a>
+          </li>
+          <li>
             <a href="<?= base_url() ?>bendahara/laporan">
               <i class="now-ui-icons business_chart-bar-32"></i>
               <p>Laporan</p>

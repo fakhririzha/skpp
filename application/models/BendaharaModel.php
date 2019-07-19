@@ -23,4 +23,36 @@ class BendaharaModel extends CI_Model
   {
     return $this->db->query("SELECT jumlahSiswi() AS jumlahSiswi")->row();
   }
+  public function getAllKelas()
+  {
+    return $this->db->get("kelas")->result();
+  }
+  public function getSiswaByKelas($kelas)
+  {
+    return $this->db->where("kode_kelas", $kelas)->get("vSiswaKelas")->result();
+  }
+  public function getSiswaBySttb($sttb)
+  {
+    return $this->db->where("sttb", $sttb)->get("vSiswaKelas")->row();
+  }
+  public function getNominalBayar($sttb)
+  {
+    return $this->db->where("sttb", $sttb)->get("vSiswaKelas")->row();
+  }
+
+  // INSERT METHOD
+  public function addBayarBulanan($data)
+  {
+    $addBayarBulanan = $this->db->insert("bulanan", [
+      "sttb" => $data["sttb"],
+      "tahun_akademik" => $data["tahunAkademik"],
+      "semester" => $data["semester"],
+      "tanggal" => $data["tanggal"],
+      "nominal" => $data["nominal"],
+      "bulan_bayar" => $data["bulanBayar"],
+      " id_petugas" => $data["idPetugas"]
+    ]);
+
+    return $addBayarBulanan;
+  }
 }

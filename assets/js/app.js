@@ -12,4 +12,11 @@ $(document).ready(function () {
       { 'searchable': false, 'targets': [2, 3, 4] }
     ]
   });
+
+  $("#iuran-bulanan").dataTable({
+    'columnDefs': [
+      { 'orderable': false, 'targets': [1, 2, 3, 4, 5] },
+      { 'searchable': false, 'targets': [2, 3, 4, 5] }
+    ]
+  });
 });

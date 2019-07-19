@@ -25,4 +25,59 @@ class Bendahara extends CI_Controller
     ];
     $this->load->view('bendahara/index', $data);
   }
+
+  public function bulanan()
+  {
+    if ($this->input->post("filterKelas")) {
+      $kelas = $this->input->post("kelas");
+
+      $data = [
+        "kelass" => $this->BendaharaModel->getAllKelas(),
+        "content" => "bendahara/pages/bulanan",
+        "cssFiles" => ["datatables.min.css"],
+        "jsFiles" => ["datatables.min.js"],
+        "siswas" => $this->BendaharaModel->getSiswaByKelas($kelas)
+      ];
+    } else {
+      $data = [
+        "kelass" => $this->BendaharaModel->getAllKelas(),
+        "content" => "bendahara/pages/bulanan",
+        "cssFiles" => ["datatables.min.css"],
+        "jsFiles" => ["datatables.min.js"]
+      ];
+    }
+
+    $this->load->view('bendahara/index', $data);
+  }
+  public function bayarBulanan()
+  {
+    if ($this->input->post("bayarBulanan")) {
+      $data = [
+        "sttb" => $this->input->post("sttb_x"),
+        "nama" => $this->input->post("nama"),
+        "tahunAkademik" => $this->input->post("tahunAkademik"),
+        "semester" => $this->input->post("semester"),
+        "tanggal" => $this->input->post("tanggalBayar"),
+        "nominal" => $this->input->post("nominalBayar"),
+        "bulanBayar" => $this->input->post("bulanBayar"),
+        "idPetugas" => $this->session->id
+      ];
+
+      if ($this->BendaharaModel->addBayarBulanan($data)) {
+        $this->session->set_flashdata('suksesMsg', 'Pembayaran iuran bulanan siswa : ' . $data["nama"] . ' dengan No. STTB ' . $data["sttb"] . ' SUKSES.');
+      } else {
+        $this->session->set_flashdata('actionMsg', 'Gagal memasukkan iuran bulanan.');
+      }
+      redirect("bendahara/bulanan");
+    } else {
+      $sttb = $this->input->get("sttb");
+
+      $data = [
+        "content" => 'bendahara/pages/bayarBulanan',
+        "siswa" => $this->BendaharaModel->getSiswaBySttb($sttb),
+        "nominalBayar" => $this->BendaharaModel->getNominalBayar($sttb)
+      ];
+      $this->load->view('bendahara/index', $data);
+    }
+  }
 }
