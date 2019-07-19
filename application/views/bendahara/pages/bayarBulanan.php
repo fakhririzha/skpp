@@ -18,8 +18,8 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
+          <hr>
         <?php endif; ?>
-        <hr>
       </div>
       <div class="card-body">
         <!-- FORM UNTUK IURAN BULANAN -->

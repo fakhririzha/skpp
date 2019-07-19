@@ -3,7 +3,6 @@
     <div class="card">
       <div class="card-header">
         <h4 class="card-title product-sans">Form Iuran Bulanan</h4>
-        <hr>
         <?php if ($this->session->suksesMsg != "") : ?>
           <hr>
           <div class="alert alert-success alert-dismissible fade show" role="alert">
