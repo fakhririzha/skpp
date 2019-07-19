@@ -39,6 +39,10 @@ class BendaharaModel extends CI_Model
   {
     return $this->db->where("sttb", $sttb)->get("vSiswaKelas")->row();
   }
+  public function getAllKodeTransaksi()
+  {
+    return $this->db->like('kode', 'B')->get("kode_transaksi")->result();
+  }
 
   // INSERT METHOD
   public function addBayarBulanan($data)
@@ -54,5 +58,18 @@ class BendaharaModel extends CI_Model
     ]);
 
     return $addBayarBulanan;
+  }
+  public function addPengeluaran($data)
+  {
+    $addPengeluaran = $this->db->insert("transaksi", [
+      "kode" => $data["kodeTransaksi"],
+      "keterangan" => $data["keterangan"],
+      "tanggal" => $data["tanggalTransaksi"],
+      "nominal" => $data["nominalTransaksi"],
+      "status" => $data["status"],
+      "id_petugas" => $data["idPetugas"]
+    ]);
+
+    return $addPengeluaran;
   }
 }

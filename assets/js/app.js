@@ -19,4 +19,14 @@ $(document).ready(function () {
       { 'searchable': false, 'targets': [2, 3, 4, 5] }
     ]
   });
+
+  if ($("#number-input").length) {
+    new Cleave("#number-input", {
+      prefix: 'Rp ',
+      noImmediatePrefix: true,
+      numeral: true,
+      numeralThousandsGroupStyle: 'thousand',
+      numeralPositiveOnly: true
+    });
+  }
 });

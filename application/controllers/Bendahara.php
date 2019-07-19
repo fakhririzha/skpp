@@ -80,4 +80,41 @@ class Bendahara extends CI_Controller
       $this->load->view('bendahara/index', $data);
     }
   }
+
+  public function pengeluaran()
+  {
+
+    $sttb = $this->input->get("sttb");
+
+    $data = [
+      "content" => 'bendahara/pages/pengeluaran',
+      "siswa" => $this->BendaharaModel->getSiswaBySttb($sttb),
+      "kodeTransaksi" => $this->BendaharaModel->getAllKodeTransaksi(),
+      "jsFiles" => ["cleave.min.js", "datatables.min.js"]
+    ];
+    $this->load->view('bendahara/index', $data);
+  }
+  public function addPengeluaran()
+  {
+    if ($this->input->post("addPengeluaran")) {
+      $nominal = $this->input->post("nominalBayar");
+      $nominal = str_replace("Rp ", "", $nominal);
+      $nominal = str_replace(",", "", $nominal);
+      $data = [
+        "kodeTransaksi" => $this->input->post("kodeTransaksi"),
+        "keterangan" => $this->input->post("keterangan"),
+        "tanggalTransaksi" => $this->input->post("tanggalTransaksi"),
+        "nominalTransaksi" => $nominal,
+        "status" => 'bukabuku',
+        "idPetugas" => $this->session->id,
+      ];
+
+      if ($this->BendaharaModel->addPengeluaran($data)) {
+        $this->session->set_flashdata('suksesMsg', 'Berhasil menambah pengeluaran.');
+      } else {
+        $this->session->set_flashdata('actionMsg', 'Gagal menambah pengeluaran');
+      }
+      redirect("bendahara");
+    }
+  }
 }
