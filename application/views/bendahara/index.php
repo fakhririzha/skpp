@@ -61,7 +61,7 @@
             </a>
           </li>
           <li>
-            <a href="<?= base_url() ?>bendahara/pemasukanlainnya">
+            <a href="<?= base_url() ?>bendahara/pemasukanLainnya">
               <i class="now-ui-icons business_money-coins"></i>
               <p>Pemasukan Lainnya</p>
             </a>

@@ -66,7 +66,7 @@ class Bendahara extends CI_Controller
       if ($this->BendaharaModel->addBayarBulanan($data)) {
         $this->session->set_flashdata('suksesMsg', 'Pembayaran iuran bulanan siswa : ' . $data["nama"] . ' dengan No. STTB ' . $data["sttb"] . ' SUKSES.');
       } else {
-        $this->session->set_flashdata('actionMsg', 'Gagal memasukkan iuran bulanan.');
+        $this->session->set_flashdata('actionMsg', 'Gagal memasukkan iuran bulanan. Anda mungkin telah membayar untuk bulan tersebut.');
       }
       redirect("bendahara/bulanan");
     } else {
@@ -137,33 +137,30 @@ class Bendahara extends CI_Controller
     }
   }
 
-  public function pemasukanlainnya()
+  public function pemasukanLainnya()
   {
     if ($this->input->post("addPemasukanLainnya")) {
-      $nominal = $this->input->post("nominalBayar");
+      $nominal = $this->input->post("nominalTransaksi");
       $nominal = str_replace("Rp ", "", $nominal);
       $nominal = str_replace(",", "", $nominal);
       $data = [
-        "sttb" => $this->input->post("sttb_x"),
-        "nama" => $this->input->post("nama"),
-        "tahunAkademik" => $this->input->post("tahunAkademik"),
-        "tanggal" => $this->input->post("tanggalBayar"),
-        "nominal" => $nominal,
+        "kodeTransaksi" => $this->input->post("kodeTransaksi"),
+        "keterangan" => $this->input->post("keterangan"),
+        "tanggalTransaksi" => $this->input->post("tanggalTransaksi"),
+        "nominalTransaksi" => $nominal,
+        "status" => 'bukabuku',
         "idPetugas" => $this->session->id
       ];
 
-      if ($this->BendaharaModel->addBayarTahunan($data)) {
-        $this->session->set_flashdata('suksesMsg', 'Pembayaran iuran tahunan siswa : ' . $data["nama"] . ' dengan No. STTB ' . $data["sttb"] . ' SUKSES.');
+      if ($this->BendaharaModel->addPemasukanLainnya($data)) {
+        $this->session->set_flashdata('suksesMsg', 'Berhasil menambah pemasukan.');
       } else {
-        $this->session->set_flashdata('actionMsg', 'Gagal memasukkan iuran tahunan karena nominal yang anda masukkan melebihi total tagihan.');
+        $this->session->set_flashdata('actionMsg', 'Gagal menambahkan pemasukan. Silahkan coba lagi.');
       }
-      redirect("bendahara/tahunan");
+      redirect("bendahara/pemasukanLainnya");
     } else {
-      $sttb = $this->input->get("sttb");
-
       $data = [
-        "content" => 'bendahara/pages/pemasukanlainnya',
-        "siswa" => $this->BendaharaModel->getSiswaBySttb($sttb),
+        "content" => 'bendahara/pages/pemasukanLainnya',
         "jsFiles" => ["cleave.min.js"]
       ];
       $this->load->view('bendahara/index', $data);

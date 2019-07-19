@@ -47,19 +47,28 @@ class BendaharaModel extends CI_Model
   // INSERT METHOD
   public function addBayarBulanan($data)
   {
-    $addBayarBulanan = $this->db->insert("bulanan", [
-      "sttb" => $data["sttb"],
-      "tahun_akademik" => $data["tahunAkademik"],
-      "semester" => $data["semester"],
-      "tanggal" => $data["tanggal"],
-      "nominal" => $data["nominal"],
-      "bulan_bayar" => $data["bulanBayar"],
-      " id_petugas" => $data["idPetugas"]
-    ]);
+    $checkPaid = $this->db->where("sttb", $data["sttb"])
+      ->where("tahun_akademik", $data["tahun_akademik"])
+      ->where("semester", $data["semester"])
+      ->where("bulan_bayar", $data["bulanBayar"])
+      ->get("bulanan")->num_rows();
 
-    return $addBayarBulanan;
+    if ($checkPaid > 0) {
+      return false;
+    } else {
+      $addBayarBulanan = $this->db->insert("bulanan", [
+        "sttb" => $data["sttb"],
+        "tahun_akademik" => $data["tahunAkademik"],
+        "semester" => $data["semester"],
+        "tanggal" => $data["tanggal"],
+        "nominal" => $data["nominal"],
+        "bulan_bayar" => $data["bulanBayar"],
+        " id_petugas" => $data["idPetugas"]
+      ]);
+
+      return $addBayarBulanan;
+    }
   }
-
   public function addBayarTahunan($data)
   {
     $billPaid = $this->db->query("SELECT SUM(nominal) AS jumlahTerbayar FROM tahunan WHERE sttb=" . $data['sttb'] . " AND tahun_akademik=" . $data['tahunAkademik'] . "")->row();
@@ -83,7 +92,23 @@ class BendaharaModel extends CI_Model
       return $addBayarTahunan;
     }
   }
+  public function addPemasukanLainnya($data)
+  {
+    if ($data["kodeTransaksi"] == "4A") {
+      $data["tanggalTransaksi"] = "1970-01-01";
+    }
 
+    $addPemasukanLainnya = $this->db->insert("transaksi", [
+      "kode" => $data["kodeTransaksi"],
+      "keterangan" => $data["keterangan"],
+      "tanggal" => $data["tanggalTransaksi"],
+      "nominal" => $data["nominalTransaksi"],
+      "status" => $data["status"],
+      "id_petugas" => $data["idPetugas"]
+    ]);
+
+    return $addPemasukanLainnya;
+  }
   public function addPengeluaran($data)
   {
     $addPengeluaran = $this->db->insert("transaksi", [
