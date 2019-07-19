@@ -47,6 +47,10 @@ class BendaharaModel extends CI_Model
   {
     return $this->db->get("vHistoriTransaksi")->result();
   }
+  public function getTransaksiBulananBySttb($sttb)
+  {
+    return $this->db->where("sttb", $sttb)->get("vHistoriTransaksiBulanan")->result();
+  }
 
   // INSERT METHOD
   public function addBayarBulanan($data)

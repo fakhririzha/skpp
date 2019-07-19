@@ -45,6 +45,15 @@ $(document).ready(function () {
     });
   }
 
+  if ($("#histori-transaksi-bulanan").length) {
+    $("#histori-transaksi-bulanan").dataTable({
+      'columnDefs': [
+        { 'orderable': false, 'targets': [1, 3, 5, 6] },
+        { 'searchable': false, 'targets': [0, 1, 2, 3, 4] }
+      ]
+    });
+  }
+
   if ($("#number-input").length) {
     new Cleave("#number-input", {
       prefix: 'Rp ',

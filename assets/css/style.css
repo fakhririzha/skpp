@@ -197,3 +197,8 @@ body {
 .product-sans {
   font-family: 'Product Sans';
 }
+
+/* CUSTOM TABLE STYLE */
+.table > thead > tr > th{
+  font-size: 1.15em;
+}
