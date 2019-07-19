@@ -68,8 +68,8 @@
           </li>
           <li>
             <a href="<?= base_url() ?>bendahara/histori">
-              <i class="now-ui-icons travel_info"></i>
-              <p>Histori Pemasukan</p>
+              <i class="fas fa-history"></i>
+              <p>Histori Transaksi</p>
             </a>
           </li>
           <li>
