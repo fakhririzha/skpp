@@ -36,6 +36,15 @@ $(document).ready(function () {
     });
   }
 
+  if ($("#histori-transaksi").length) {
+    $("#histori-transaksi").dataTable({
+      'columnDefs': [
+        { 'orderable': false, 'targets': [1, 2, 4, 5, 6] },
+        { 'searchable': false, 'targets': [0, 1, 2, 4, 5] }
+      ]
+    });
+  }
+
   if ($("#number-input").length) {
     new Cleave("#number-input", {
       prefix: 'Rp ',

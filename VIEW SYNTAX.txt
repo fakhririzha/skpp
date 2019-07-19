@@ -1,2 +1,5 @@
 CREATE OR REPLACE VIEW vSiswaKelas AS
 SELECT s.sttb, s.nama, s.kode_kelas, s.status, k.semester, k.tahun_akademik, k.iuran_bulanan, k.iuran_bulanan_subsidi, k.iuran_tahunan FROM siswa s LEFT JOIN kelas k ON s.kode_kelas = k.kode_kelas;
+
+CREATE OR REPLACE VIEW vHistoriTransaksi AS
+SELECT t.*, u.nama FROM transaksi t, user u WHERE t.id_petugas = u.id;

@@ -176,14 +176,14 @@ class Bendahara extends CI_Controller
       "content" => 'bendahara/pages/pengeluaran',
       "siswa" => $this->BendaharaModel->getSiswaBySttb($sttb),
       "kodeTransaksi" => $this->BendaharaModel->getAllKodeTransaksi(),
-      "jsFiles" => ["cleave.min.js", "datatables.min.js"]
+      "jsFiles" => ["cleave.min.js"]
     ];
     $this->load->view('bendahara/index', $data);
   }
   public function addPengeluaran()
   {
     if ($this->input->post("addPengeluaran")) {
-      $nominal = $this->input->post("nominalBayar");
+      $nominal = $this->input->post("nominalTransaksi");
       $nominal = str_replace("Rp ", "", $nominal);
       $nominal = str_replace(",", "", $nominal);
       $data = [
@@ -200,7 +200,18 @@ class Bendahara extends CI_Controller
       } else {
         $this->session->set_flashdata('actionMsg', 'Gagal menambah pengeluaran');
       }
-      redirect("bendahara");
+      redirect("bendahara/pengeluaran");
     }
+  }
+
+  public function histori()
+  {
+    $data = [
+      "content" => 'bendahara/pages/histori',
+      "historiTransaksi" => $this->BendaharaModel->getAllTransaksi(),
+      "cssFiles" => ["datatables.min.css"],
+      "jsFiles" => ["datatables.min.js"]
+    ];
+    $this->load->view('bendahara/index', $data);
   }
 }

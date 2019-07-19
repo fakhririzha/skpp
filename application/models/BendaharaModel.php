@@ -43,6 +43,10 @@ class BendaharaModel extends CI_Model
   {
     return $this->db->like('kode', 'B')->get("kode_transaksi")->result();
   }
+  public function getAllTransaksi()
+  {
+    return $this->db->get("vHistoriTransaksi")->result();
+  }
 
   // INSERT METHOD
   public function addBayarBulanan($data)
