@@ -76,7 +76,7 @@ class BendaharaModel extends CI_Model
     } else {
       $addBayarBulanan = $this->db->insert("bulanan", [
         "sttb" => $data["sttb"],
-        "no_ref" => 'BLN' . $this->getIDTransaksiBulananTerakhir(),
+        "no_ref" => 'BLN' . $this->getIDTransaksiBulananTerakhir() + 1,
         "tahun_akademik" => $data["tahunAkademik"],
         "semester" => $data["semester"],
         "tanggal" => $data["tanggal"],
@@ -102,7 +102,7 @@ class BendaharaModel extends CI_Model
     } else {
       $addBayarTahunan = $this->db->insert("tahunan", [
         "sttb" => $data["sttb"],
-        "no_ref" => 'THN' . $this->getIDTransaksiTahunanTerakhir(),
+        "no_ref" => 'THN' . $this->getIDTransaksiTahunanTerakhir() + 1,
         "tahun_akademik" => $data["tahunAkademik"],
         "tanggal" => $data["tanggal"],
         "nominal" => $data["nominal"],
@@ -119,7 +119,7 @@ class BendaharaModel extends CI_Model
     }
 
     $addPemasukanLainnya = $this->db->insert("transaksi", [
-      "no_ref" => 'LN' . $this->getIDTransaksiTerakhir(),
+      "no_ref" => 'LN' . $this->getIDTransaksiTerakhir() + 1,
       "kode" => $data["kodeTransaksi"],
       "keterangan" => $data["keterangan"],
       "tanggal" => $data["tanggalTransaksi"],
