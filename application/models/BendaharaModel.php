@@ -59,7 +59,7 @@ class BendaharaModel extends CI_Model
   }
   public function getIDTransaksiTerakhir()
   {
-    return $this->db->query("SELECT id FROM transaksi ORDER BY id DESC LIMIT 1")->> row();
+    return $this->db->query("SELECT id FROM transaksi ORDER BY id DESC LIMIT 1")->row();
   }
 
   // INSERT METHOD
