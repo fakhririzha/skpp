@@ -51,11 +51,15 @@ class BendaharaModel extends CI_Model
   }
   public function getIDTransaksiBulananTerakhir()
   {
-    return $this->db->query("SELECT id FROM bulanan LIMIT 1")->row();
+    return $this->db->query("SELECT id FROM bulanan ORDER BY id DESC LIMIT 1")->row();
   }
   public function getIDTransaksiTahunanTerakhir()
   {
-    return $this->db->query("SELECT id FROM tahunan LIMIT 1")->row();
+    return $this->db->query("SELECT id FROM tahunan ORDER BY id DESC LIMIT 1")->row();
+  }
+  public function getIDTransaksiTerakhir()
+  {
+    return $this->db->query("SELECT id FROM transaksi ORDER BY id DESC LIMIT 1")->> row();
   }
 
   // INSERT METHOD
@@ -115,6 +119,7 @@ class BendaharaModel extends CI_Model
     }
 
     $addPemasukanLainnya = $this->db->insert("transaksi", [
+      "no_ref" => 'LN' . $this->getIDTransaksiTerakhir(),
       "kode" => $data["kodeTransaksi"],
       "keterangan" => $data["keterangan"],
       "tanggal" => $data["tanggalTransaksi"],
