@@ -80,6 +80,18 @@ class Bendahara extends CI_Controller
       $this->load->view('bendahara/index', $data);
     }
   }
+  public function hapusBulanan()
+  {
+    $sttb = $this->input->get("sttb");
+    $id = $this->input->get("id");
+
+    if ($this->BendaharaModel->hapusTransaksiBulananBySttbId($sttb, $id)) {
+      $this->session->set_flashdata('suksesMsg', 'Hapus iuran bulanan dengan No. STTB :' . $sttb . ' SUKSES.');
+    } else {
+      $this->session->set_flashdata('actionMsg', 'Gagal menghapus iuran bulanan.');
+    }
+    redirect("bendahara/bulanan");
+  }
 
   public function tahunan()
   {

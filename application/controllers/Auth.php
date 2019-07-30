@@ -30,6 +30,7 @@ class Auth extends CI_Controller
           $this->session->set_userdata([
             'id' => $data->id,
             'username' => $data->username,
+            'nama' => $data->nama,
             'jabatan' => $data->jabatan
           ]);
           $this->session->unset_userdata('captcha');

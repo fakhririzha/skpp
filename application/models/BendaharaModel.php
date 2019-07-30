@@ -13,12 +13,10 @@ class BendaharaModel extends CI_Model
   {
     return $this->db->query("SELECT jumlahAkun() AS jumlahAkun")->row();
   }
-
   public function getJumlahSiswa()
   {
     return $this->db->query("SELECT jumlahSiswa() AS jumlahSiswa")->row();
   }
-
   public function getJumlahSiswi()
   {
     return $this->db->query("SELECT jumlahSiswi() AS jumlahSiswi")->row();
@@ -51,6 +49,14 @@ class BendaharaModel extends CI_Model
   {
     return $this->db->where("sttb", $sttb)->get("vHistoriTransaksiBulanan")->result();
   }
+  public function getIDTransaksiBulananTerakhir()
+  {
+    return $this->db->query("SELECT id FROM bulanan LIMIT 1")->row();
+  }
+  public function getIDTransaksiTahunanTerakhir()
+  {
+    return $this->db->query("SELECT id FROM tahunan LIMIT 1")->row();
+  }
 
   // INSERT METHOD
   public function addBayarBulanan($data)
@@ -66,6 +72,7 @@ class BendaharaModel extends CI_Model
     } else {
       $addBayarBulanan = $this->db->insert("bulanan", [
         "sttb" => $data["sttb"],
+        "no_ref" => 'BLN' . $this->getIDTransaksiBulananTerakhir(),
         "tahun_akademik" => $data["tahunAkademik"],
         "semester" => $data["semester"],
         "tanggal" => $data["tanggal"],
@@ -91,6 +98,7 @@ class BendaharaModel extends CI_Model
     } else {
       $addBayarTahunan = $this->db->insert("tahunan", [
         "sttb" => $data["sttb"],
+        "no_ref" => 'THN' . $this->getIDTransaksiTahunanTerakhir(),
         "tahun_akademik" => $data["tahunAkademik"],
         "tanggal" => $data["tanggal"],
         "nominal" => $data["nominal"],
@@ -129,5 +137,14 @@ class BendaharaModel extends CI_Model
     ]);
 
     return $addPengeluaran;
+  }
+
+  // DELETE METHOD
+  public function hapusTransaksiBulananBySttbId($sttb, $id)
+  {
+    $this->db->where("sttb", $sttb)->where("id", $id)->delete("bulanan");
+    $count = $this->db->affected_rows();
+
+    return $count;
   }
 }
