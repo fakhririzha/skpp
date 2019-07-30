@@ -36,10 +36,10 @@
                   </td>
                   <td class="text-center"><?= $trx->bulan_bayar ?></td>
                   <td class="text-center">
-                    <a class="btn btn-success text-white" href="<?= base_url() ?>bendahara/cetakBulanan?sttb=<?= $trx->sttbSiswa ?>&id=<?= $trx->id ?>"><i class="fas fa-print"></i> Cetak</a>
+                    <a class="btn btn-success text-white" href="<?= base_url() ?>bendahara/cetakBulanan?sttb=<?= $trx->sttbSiswa ?>&no_ref=<?= $trx->no_ref ?>"><i class="fas fa-print"></i> Cetak</a>
                   </td>
                   <td class="text-center">
-                    <a class="btn btn-danger text-white" href="<?= base_url() ?>bendahara/hapusBulanan?sttb=<?= $trx->sttbSiswa ?>&id=<?= $trx->id ?>"><i class="fas fa-trash-alt"></i> Hapus</a>
+                    <a class="btn btn-danger text-white" href="<?= base_url() ?>bendahara/hapusBulanan?sttb=<?= $trx->sttbSiswa ?>&no_ref=<?= $trx->no_ref ?>"><i class="fas fa-trash-alt"></i> Hapus</a>
                   </td>
                 </tr>
 
