@@ -150,9 +150,9 @@ class BendaharaModel extends CI_Model
   }
 
   // DELETE METHOD
-  public function hapusTransaksiBulananBySttbId($sttb, $id)
+  public function hapusTransaksiBulananBySttbId($sttb, $no_ref)
   {
-    $this->db->where("sttb", $sttb)->where("id", $id)->delete("bulanan");
+    $this->db->where("sttb", $sttb)->where("no_ref", $no_ref)->delete("bulanan");
     $count = $this->db->affected_rows();
 
     return $count;
