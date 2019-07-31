@@ -154,6 +154,7 @@ class BendaharaModel extends CI_Model
   {
     $this->db->where("sttb", $sttb)->where("no_ref", $no_ref)->delete("bulanan");
     $count = $this->db->affected_rows();
+    $this->db->where("no_ref", $no_ref)->delete("transaksi");
 
     return $count;
   }

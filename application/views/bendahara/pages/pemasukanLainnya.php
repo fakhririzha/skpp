@@ -36,8 +36,8 @@
                 <label for="kodeTransaksi">Kode Transaksi</label>
                 <select class="custom-select form-control" name="kodeTransaksi" required>
                   <option value="">Pilih kode</option>
-                  <option value="3A">Pemasukan Lainnya</option>
-                  <option value="4A">Saldo Awal</option>
+                  <option value="3A">(3A) - Pemasukan Lainnya</option>
+                  <option value="4A">(4A) - Saldo Awal</option>
                 </select>
               </div>
             </div>
