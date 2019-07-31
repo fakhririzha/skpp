@@ -28,7 +28,7 @@
             <div class="col-md-12">
               <div class="form-group">
                 <label for="tanggalTransaksi">Tanggal Transaksi</label>
-                <input type="text" class="form-control" name="tanggalTransaksi" value="<?= date("Y-m-d", time()) ?>" readonly>
+                <input type="text" id="date-input" class="form-control" name="tanggalTransaksi" value="<?= date("Y-m-d", time()) ?>">
               </div>
             </div>
             <div class="col-md-12">

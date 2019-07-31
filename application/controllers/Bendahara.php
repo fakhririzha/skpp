@@ -205,7 +205,8 @@ class Bendahara extends CI_Controller
       "content" => 'bendahara/pages/pengeluaran',
       "siswa" => $this->BendaharaModel->getSiswaBySttb($sttb),
       "kodeTransaksi" => $this->BendaharaModel->getAllKodeTransaksi(),
-      "jsFiles" => ["cleave.min.js"]
+      "cssFiles" => ["gijgo.min.css"],
+      "jsFiles" => ["cleave.min.js", "gijgo.min.js"]
     ];
     $this->load->view('bendahara/index', $data);
   }
