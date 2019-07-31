@@ -18,16 +18,31 @@ SELECT tanggal, (SUM(nominal)) AS penerimaanPutra FROM transaksi WHERE kode = '2
 
 CREATE OR REPLACE VIEW vLaporanSPP AS
 SELECT
-    DATE_FORMAT(`skpp`.`transaksi`.`tanggal`, '%d/%m/%Y') AS `tanggalFormatted`,
-    `skpp`.`transaksi`.`tanggal` AS `tanggal`,
-    `penerimaanSPP`(`skpp`.`transaksi`.`nominal`, `skpp`.`transaksi`.`kode`, 'Putra') AS `putra`,
-    `penerimaanSPP`(`skpp`.`transaksi`.`nominal`, `skpp`.`transaksi`.`kode`, 'Putri') AS `putri`,
-    SUM((SELECT `putra`)) AS `jlhPutra`,
-    SUM((SELECT `putri`)) AS `jlhPutri`,
-    SUM(((SELECT `putra`)+(SELECT `putri`))) AS `jumlah`
+    DATE_FORMAT(transaksi.tanggal, '%d/%m/%Y') AS tanggalFormatted,
+    transaksi.tanggal AS tanggal,
+    penerimaanSPP(transaksi.nominal, transaksi.kode, 'Putra') AS putra,
+    penerimaanSPP(transaksi.nominal, transaksi.kode, 'Putri') AS putri,
+    SUM((SELECT putra)) AS jlhPutra,
+    SUM((SELECT putri)) AS jlhPutri,
+    SUM(((SELECT putra)+(SELECT putri))) AS jumlah
 FROM
-    `skpp`.`transaksi`
+    transaksi
 WHERE
-    ((`skpp`.`transaksi`.`kode` = '1A') OR(`skpp`.`transaksi`.`kode` = '2A'))
+    ((transaksi.kode = '1A') OR(transaksi.kode` = '2A'))
 GROUP BY
-    `skpp`.`transaksi`.`tanggal`
+    transaksi.tanggal;
+
+CREATE OR REPLACE VIEW vLaporanKeuangan AS
+SELECT
+    DATE_FORMAT(transaksi.tanggal, '%d/%m/%Y') AS tanggalFormatted,
+    transaksi.tanggal AS tanggal,
+    laporanKeuangan(transaksi.nominal, transaksi.kode, 'Pemasukan') AS debet,
+    laporanKeuangan(transaksi.nominal, transaksi.kode, 'Pengeluaran') AS kredit,
+    SUM((SELECT debet)) AS jlhDebet,
+    SUM((SELECT kredit)) AS jlhKredit,
+    SUM(((SELECT debet)+(SELECT kredit))) AS selisih
+FROM
+    transaksi
+GROUP BY
+    transaksi.tanggal;
+

@@ -235,7 +235,7 @@ class Bendahara extends CI_Controller
       } else {
         $this->session->set_flashdata('actionMsg', 'Gagal menambah pengeluaran');
       }
-      redirect("bendahara/pengeluaran");
+      redirect("bendahara/histori");
     }
   }
 
@@ -285,10 +285,22 @@ class Bendahara extends CI_Controller
   {
     if ($this->input->post("filterRentang")) {
       $filterRentang = $this->input->post("tahun") . "-" . $this->input->post("bulan") . "-01";
-      var_dump($this->generateLaporanSPP($filterRentang));
+      $this->generateLaporanSPP($filterRentang);
     } else {
       $data = [
-        "content" => 'bendahara/pages/laporanspp'
+        "content" => 'bendahara/pages/laporanSpp'
+      ];
+      $this->load->view('bendahara/index', $data);
+    }
+  }
+  public function laporanKeuangan()
+  {
+    if ($this->input->post("filterRentang")) {
+      $filterRentang = $this->input->post("tahun") . "-" . $this->input->post("bulan") . "-01";
+      $this->generateLaporanKeuangan($filterRentang);
+    } else {
+      $data = [
+        "content" => 'bendahara/pages/laporanKeuangan'
       ];
       $this->load->view('bendahara/index', $data);
     }
@@ -301,10 +313,6 @@ class Bendahara extends CI_Controller
     $sebulan = Carbon::createFromFormat("Y-m-d H:i:s", $tanggal->addMonth(1)->subDay(1))->format("Y-m-d");
     $tanggal = $tanggal->subDay(1);
 
-    // $pemasukan = $this->BendaharaModel->getPemasukan($tanggal->format("Y-m-d"))->pemasukan;
-    // $pengeluaran = $this->BendaharaModel->getPengeluaran($tanggal->format("Y-m-d"))->pengeluaran;
-
-    // $saldoAwal = $pemasukan - $pengeluaran;
     $pemasukanLainnya = $this->BendaharaModel->getPemasukanLainnya($tanggalAsli, $sebulan);
     $laporanSPP = $this->BendaharaModel->getLaporanSPP($tanggalAsli, $sebulan);
 
@@ -435,6 +443,140 @@ class Bendahara extends CI_Controller
 
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     header('Content-Disposition: attachment;filename="Report SPP Bulan ' . $bulan . '.xlsx"');
+    header('Cache-Control: max-age=0');
+    // If you're serving to IE 9, then the following may be needed
+    header('Cache-Control: max-age=1');
+
+    // If you're serving to IE over SSL, then the following may be needed
+    header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+    header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+    header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+    header('Pragma: public'); // HTTP/1.0
+
+    $writer = IOFactory::createWriter($xls, 'Xlsx');
+    $writer->save('php://output');
+    exit;
+  }
+  public function generateLaporanKeuangan($filterRentang)
+  {
+    $tanggal = Carbon::createFromFormat("Y-m-d", $filterRentang);
+    $tanggalAsli = $tanggal->format("Y-m-d");
+    $sebulan = Carbon::createFromFormat("Y-m-d H:i:s", $tanggal->addMonth(1)->subDay(1))->format("Y-m-d");
+    $tanggal = $tanggal->subDay(1);
+
+    $pemasukan = $this->BendaharaModel->getPemasukan($tanggal->format("Y-m-d"))->pemasukan;
+    $pengeluaran = $this->BendaharaModel->getPengeluaran($tanggal->format("Y-m-d"))->pengeluaran;
+
+    $saldoAwal = $pemasukan - $pengeluaran;
+    $laporanKeuangan = $this->BendaharaModel->getLaporanKeuangan($tanggalAsli, $sebulan);
+    $pemasukanLainnya = $this->BendaharaModel->getPemasukanLainnya($tanggalAsli, $sebulan);
+
+    $xls = new Spreadsheet();
+
+    $xls->getProperties()
+      ->setCreator('Ponpes Mawaridussalam')
+      ->setLastModifiedBy($this->session->username)
+      ->setTitle('Laporan Keuangan Bulanan')
+      ->setSubject('Laporan Keuangan Bulanan');
+
+    // SET DATA DI DOKUMEN
+    $xls->setActiveSheetIndex(0)
+      ->setCellValue('A1', 'NO.')
+      ->setCellValue('B1', 'TANGGAL')
+      ->setCellValue('C1', 'HARI')
+      ->setCellValue('D1', 'DEBET')
+      ->setCellValue('E1', 'KREDIT')
+      ->setCellValue('F1', 'SALDO');
+
+    $i = 2;
+    $num = 1;
+    $xls->setActiveSheetIndex(0)
+      ->setCellValue('A' . $i, '')
+      ->setCellValue('B' . $i, '')
+      ->setCellValue('C' . $i, '')
+      ->setCellValue('D' . $i, '')
+      ->setCellValue('E' . $i, '')
+      ->setCellValue('F' . $i, $saldoAwal);
+    $i++;
+
+    $saldo = $saldoAwal;
+
+    foreach ($laporanKeuangan as $data) {
+      $hari = Carbon::parse($data->tanggal);
+      $hari = $hari->locale('id_ID')->dayName;
+      $tanggal = DateTime::createFromFormat("Y-m-d", $data->tanggal)->format("d/m/Y");
+
+      $saldo = $saldo + ($data->jlhDebit - $data->jlhKredit);
+
+      $xls->setActiveSheetIndex(0)
+        ->setCellValue('A' . $i, $num)
+        ->setCellValue('B' . $i, $tanggal)
+        ->setCellValue('C' . $i, strtoupper($hari))
+        ->setCellValue('D' . $i, $data->jlhDebit)
+        ->setCellValue('E' . $i, $data->jlhKredit)
+        ->setCellValue('F' . $i, $saldo);
+      $i++;
+      $num++;
+    }
+    $lainnya = $pemasukanLainnya->pemasukanLainnya;
+    if ($pemasukanLainnya->pemasukanLainnya == "") {
+      $lainnya = 0;
+    }
+    $saldoSkrg = $lainnya + $saldo;
+    $xls->setActiveSheetIndex(0)
+      ->setCellValue('A' . $i, $num)
+      ->setCellValue('B' . $i, 'LAIN-LAIN')
+      ->setCellValue('C' . $i, '')
+      ->setCellValue('D' . $i, $lainnya)
+      ->setCellValue('E' . $i, '')
+      ->setCellValue('F' . $i, $saldoSkrg);
+    // ->setCellValue('F' . $i, '=SUM(F2:F' . ($i - 1) . ')');
+    $i++;
+
+    $xls->setActiveSheetIndex(0)
+      ->mergeCells('A' . $i . ':C' . $i)
+      ->setCellValue('A' . $i, 'TOTAL KESELURUHAN')
+      ->setCellValue('D' . $i, '=SUM(D2:D' . ($i - 1) . ')')
+      ->setCellValue('E' . $i, '=SUM(E2:E' . ($i - 1) . ')')
+      ->setCellValue(
+        'F' . $i,
+        $saldoSkrg
+      );
+
+    $xls->getActiveSheet()
+      ->getStyle('A1:F1')
+      ->getAlignment('A1:F1')
+      ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
+      ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+    $xls->getActiveSheet()
+      ->getStyle('A2:C' . ($i - 1))
+      ->getAlignment('A2:C' . ($i - 1))
+      ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
+      ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+
+    $xls->getActiveSheet()->getStyle('D3:F' . $i)
+      ->getNumberFormat()
+      ->setFormatCode('Rp#,##0');
+    $xls->getActiveSheet(0)->getStyle('F2')
+      ->getNumberFormat()
+      ->setFormatCode('Rp#,##0');
+
+    foreach (range('A', 'F') as $columnID) {
+      $xls->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(TRUE);
+    }
+
+    $styleArray = [
+      'borders' => [
+        'allBorders' => [
+          'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
+          'color' => ['rgb' => '000000'],
+        ],
+      ],
+    ];
+    $xls->getActiveSheet()->getStyle('A1:F' . $i)->applyFromArray($styleArray);
+
+    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    header('Content-Disposition: attachment;filename="Laporan Keuangan.xlsx"');
     header('Cache-Control: max-age=0');
     // If you're serving to IE 9, then the following may be needed
     header('Cache-Control: max-age=1');

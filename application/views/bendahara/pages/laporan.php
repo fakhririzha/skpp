@@ -22,13 +22,25 @@
         <hr>
       </div>
       <div class="card-body">
-        <div class="col-lg-4 col-md-6">
-          <div class="card card-chart orange-main text-white">
-            <div class="card-header">
-              <h4 class="card-title"><i class="now-ui-icons business_money-coins"></i> Laporan SPP</h4>
+        <div class="row">
+          <div class="col-lg-4 col-md-6">
+            <div class="card card-chart orange-main text-white">
+              <div class="card-header">
+                <h4 class="card-title"><i class="now-ui-icons business_money-coins"></i> Laporan SPP</h4>
+              </div>
+              <div class="card-body text-right">
+                <a href="<?= base_url() ?>bendahara/laporanSpp" class="btn btn-info navy-gradient">Klik</a>
+              </div>
             </div>
-            <div class="card-body text-right">
-              <a href="<?= base_url() ?>bendahara/laporanSpp" class="btn btn-info navy-gradient">Klik</a>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <div class="card card-chart orange-main text-white">
+              <div class="card-header">
+                <h4 class="card-title"><i class="now-ui-icons business_money-coins"></i> Laporan Keuangan</h4>
+              </div>
+              <div class="card-body text-right">
+                <a href="<?= base_url() ?>bendahara/laporanKeuangan" class="btn btn-info navy-gradient">Klik</a>
+              </div>
             </div>
           </div>
         </div>
