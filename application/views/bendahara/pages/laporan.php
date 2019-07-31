@@ -28,7 +28,7 @@
               <h4 class="card-title"><i class="now-ui-icons business_money-coins"></i> Laporan SPP</h4>
             </div>
             <div class="card-body text-right">
-              <a href="<?= base_url() ?>bendahara/laporanspp" class="btn btn-info navy-gradient">Klik</a>
+              <a href="<?= base_url() ?>bendahara/laporanSpp" class="btn btn-info navy-gradient">Klik</a>
             </div>
           </div>
         </div>

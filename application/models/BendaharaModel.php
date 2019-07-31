@@ -53,6 +53,22 @@ class BendaharaModel extends CI_Model
   {
     return $this->db->where("sttb", $sttb)->get("vHistoriTransaksiTahunan")->result();
   }
+  public function getPemasukan($tanggal)
+  {
+    return $this->db->query("SELECT hitungPenerimaan('1970-01-01', '$tanggal') AS pemasukan")->row();
+  }
+  public function getPengeluaran($tanggal)
+  {
+    return $this->db->query("SELECT hitungPengeluaran('1970-01-01', '$tanggal') AS pengeluaran")->row();
+  }
+  public function getPemasukanLainnya($tanggalAsli, $sebulan)
+  {
+    return $this->db->query("SELECT hitungPemasukanLainnya('$tanggalAsli', '$sebulan') AS pemasukanLainnya")->row();
+  }
+  public function getLaporanSPP($tanggalAsli, $sebulan)
+  {
+    return $this->db->query("SELECT * FROM vLaporanSPP WHERE tanggal BETWEEN '$tanggalAsli' AND '$sebulan'")->result();
+  }
 
   // INSERT METHOD
   public function addBayarBulanan($data)
