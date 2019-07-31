@@ -67,6 +67,14 @@ body {
   background: linear-gradient(to right, #41d8dd, #55b3ee) !important;
 }
 
+.navy-gradient {
+  background: linear-gradient(90deg,#0c2646 0,#204065 60%,#2a5788) !important;
+}
+
+.orange-main {
+  background: #f96332;
+}
+
 /* ============================================================= */
 
 

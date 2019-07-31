@@ -268,4 +268,15 @@ class Bendahara extends CI_Controller
     ];
     $this->load->view('bendahara/index', $data);
   }
+
+  public function laporan()
+  {
+    $data = [
+      "content" => 'bendahara/pages/laporan',
+      "jumlahAkun" => $this->BendaharaModel->getJumlahAkun(),
+      "jumlahSiswa" => $this->BendaharaModel->getJumlahSiswa(),
+      "jumlahSiswi" => $this->BendaharaModel->getJumlahSiswi()
+    ];
+    $this->load->view('bendahara/index', $data);
+  }
 }
