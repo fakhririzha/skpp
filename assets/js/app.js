@@ -63,4 +63,22 @@ $(document).ready(function () {
       numeralPositiveOnly: true
     });
   }
+
+  if ($("#date-input").length) {
+
+    $("#date-input").datepicker({
+      uiLibrary: "bootstrap4",
+      format: "yyyy-mm-dd",
+      iconsLibrary: 'fontawesome'
+    });
+
+    $("#date-input").on("focus", function () {
+      $(".input-group-append > button").addClass("border-orange");
+    });
+
+    $("#date-input").on("focusout", function () {
+      $(".input-group-append > button").removeClass("border-orange");
+    })
+
+  }
 });

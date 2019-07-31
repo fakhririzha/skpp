@@ -56,7 +56,7 @@
             <div class="col-md-12">
               <div class="form-group">
                 <label for="status">Tanggal Bayar</label>
-                <input type="text" class="form-control" name="tanggalBayar" value="<?= date("Y-m-d", time()) ?>" readonly>
+                <input type="text" id="date-input" class="form-control" name="tanggalBayar" value="<?= date("Y-m-d", time()) ?>">
               </div>
             </div>
             <div class="col-md-12">

@@ -56,7 +56,7 @@
             <div class="col-md-12">
               <div class="form-group">
                 <label for="status">Tanggal Bayar</label>
-                <input type="text" class="form-control" name="tanggalBayar" value="<?= date("Y-m-d", time()) ?>" readonly>
+                <input type="text" id="date-input" class="form-control" name="tanggalBayar" value="<?= date("Y-m-d", time()) ?>">
               </div>
             </div>
             <div class="col-md-12">
@@ -68,7 +68,11 @@
             <div class="col-md-12">
               <div class="form-group">
                 <label for="semester">Semester</label>
-                <input type="text" class="form-control" name="semester" value="<?= $siswa->semester ?>" readonly>
+                <select name="semester" class="custom-select form-control" required>
+                  <option value="">Pilih semester</option>
+                  <option value="A">Ganjil</option>
+                  <option value="B">Genap</option>
+                </select>
               </div>
             </div>
             <div class="col-md-12">
@@ -84,21 +88,18 @@
                 <label for="bulanBayar">Bulan Bayar</label>
                 <select name="bulanBayar" class="custom-select form-control" required>
                   <option value="">Pilih bulan</option>
-                  <?php if ($siswa->semester == "A") : ?>
-                    <option value="7">Juli</option>
-                    <option value="8">Agustus</option>
-                    <option value="9">September</option>
-                    <option value="10">Oktober</option>
-                    <option value="11">November</option>
-                    <option value="12">Desember</option>
-                  <?php else : ?>
-                    <option value="1">Januari</option>
-                    <option value="2">Februari</option>
-                    <option value="3">Maret</option>
-                    <option value="4">April</option>
-                    <option value="5">Mei</option>
-                    <option value="6">Juni</option>
-                  <?php endif; ?>
+                  <option value="7">Juli</option>
+                  <option value="8">Agustus</option>
+                  <option value="9">September</option>
+                  <option value="10">Oktober</option>
+                  <option value="11">November</option>
+                  <option value="12">Desember</option>
+                  <option value="1">Januari</option>
+                  <option value="2">Februari</option>
+                  <option value="3">Maret</option>
+                  <option value="4">April</option>
+                  <option value="5">Mei</option>
+                  <option value="6">Juni</option>
                 </select>
               </div>
             </div>

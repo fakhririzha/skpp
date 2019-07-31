@@ -75,7 +75,9 @@ class Bendahara extends CI_Controller
       $data = [
         "content" => 'bendahara/pages/bayarBulanan',
         "siswa" => $this->BendaharaModel->getSiswaBySttb($sttb),
-        "nominalBayar" => $this->BendaharaModel->getNominalBayar($sttb)
+        "nominalBayar" => $this->BendaharaModel->getNominalBayar($sttb),
+        "cssFiles" => ["gijgo.min.css"],
+        "jsFiles" => ["gijgo.min.js"]
       ];
       $this->load->view('bendahara/index', $data);
     }
@@ -143,7 +145,8 @@ class Bendahara extends CI_Controller
       $data = [
         "content" => 'bendahara/pages/bayarTahunan',
         "siswa" => $this->BendaharaModel->getSiswaBySttb($sttb),
-        "jsFiles" => ["cleave.min.js"]
+        "cssFiles" => ["gijgo.min.css"],
+        "jsFiles" => ["cleave.min.js", "gijgo.min.js"]
       ];
       $this->load->view('bendahara/index', $data);
     }

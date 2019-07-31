@@ -202,3 +202,21 @@ body {
 .table > thead > tr > th{
   font-size: 1.15em;
 }
+
+
+/* CUSTOM DATEPICKER BUTTON */
+.input-group-append button {
+  color: #6c757d;
+  margin: 0;
+}
+/* .input-group-append button:focus {
+  border: 1px solid #f96332;
+} */
+.border-left-0 {
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
+}
+.border-orange {
+  border: 1px solid #f96332 !important;
+  transition: 0.3s ease-in-out;
+}
