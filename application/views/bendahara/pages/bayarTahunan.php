@@ -62,7 +62,7 @@
             <div class="col-md-12">
               <div class="form-group">
                 <label for="status">Tahun Akademik</label>
-                <input type="text" class="form-control" name="tahunAkademik" value="<?= $siswa->tahun_akademik ?>" readonly>
+                <input type="text" class="form-control" name="tahunAkademik" value="<?= $siswa->tahun_akademik ?>">
               </div>
             </div>
             <div class="col-md-12">
