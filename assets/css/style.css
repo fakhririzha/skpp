@@ -228,3 +228,8 @@ body {
   border: 1px solid #f96332 !important;
   transition: 0.3s ease-in-out;
 }
+
+/* CUSTOM FONTS */
+.f-med {
+  font-size: 1.45em;
+}
