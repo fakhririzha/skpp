@@ -49,6 +49,10 @@ class BendaharaModel extends CI_Model
   {
     return $this->db->where("sttb", $sttb)->get("vHistoriTransaksiBulanan")->result();
   }
+  public function getTransaksiTahunanBySttb($sttb)
+  {
+    return $this->db->where("sttb", $sttb)->get("vHistoriTransaksiTahunan")->result();
+  }
   public function getIDTransaksiBulananTerakhir()
   {
     return $this->db->query("SELECT id FROM bulanan ORDER BY id DESC LIMIT 1")->row();

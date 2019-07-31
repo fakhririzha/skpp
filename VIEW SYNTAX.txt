@@ -6,3 +6,6 @@ SELECT t.*, u.nama FROM transaksi t, user u WHERE t.id_petugas = u.id;
 
 CREATE OR REPLACE VIEW vHistoriTransaksiBulanan AS
 SELECT (s.nama) AS namaSiswa, (s.sttb) AS sttbSiswa, b.* FROM bulanan b, siswa s WHERE s.sttb = b.sttb;
+
+CREATE OR REPLACE VIEW vHistoriTransaksiTahunan AS
+SELECT (s.nama) AS namaSiswa, (s.sttb) AS sttbSiswa, b.* FROM tahunan b, siswa s WHERE s.sttb = b.sttb;
