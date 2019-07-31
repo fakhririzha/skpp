@@ -53,24 +53,12 @@ class BendaharaModel extends CI_Model
   {
     return $this->db->where("sttb", $sttb)->get("vHistoriTransaksiTahunan")->result();
   }
-  public function getIDTransaksiBulananTerakhir()
-  {
-    return $this->db->query("SELECT id FROM bulanan ORDER BY id DESC LIMIT 1")->row();
-  }
-  public function getIDTransaksiTahunanTerakhir()
-  {
-    return $this->db->query("SELECT id FROM tahunan ORDER BY id DESC LIMIT 1")->row();
-  }
-  public function getIDTransaksiTerakhir()
-  {
-    return $this->db->query("SELECT id FROM transaksi ORDER BY id DESC LIMIT 1")->row();
-  }
 
   // INSERT METHOD
   public function addBayarBulanan($data)
   {
     $checkPaid = $this->db->where("sttb", $data["sttb"])
-      ->where("tahun_akademik", $data["tahun_akademik"])
+      ->where("tahun_akademik", $data["tahunAkademik"])
       ->where("semester", $data["semester"])
       ->where("bulan_bayar", $data["bulanBayar"])
       ->get("bulanan")->num_rows();
@@ -78,17 +66,18 @@ class BendaharaModel extends CI_Model
     if ($checkPaid > 0) {
       return false;
     } else {
-      $no_ref = ((int) $this->getIDTransaksiBulananTerakhir() + 1);
-      $no_ref = 'BLN' . $no_ref;
       $addBayarBulanan = $this->db->insert("bulanan", [
         "sttb" => $data["sttb"],
-        "no_ref" => $no_ref,
         "tahun_akademik" => $data["tahunAkademik"],
         "semester" => $data["semester"],
         "tanggal" => $data["tanggal"],
         "nominal" => $data["nominal"],
         "bulan_bayar" => $data["bulanBayar"],
-        " id_petugas" => $data["idPetugas"]
+        "id_petugas" => $data["idPetugas"]
+      ]);
+      $last = $this->db->insert_id();
+      $noref = $this->db->where("id", $last)->update("bulanan", [
+        "no_ref" => 'BLN' . $last
       ]);
 
       return $addBayarBulanan;
@@ -106,15 +95,16 @@ class BendaharaModel extends CI_Model
     if ($totalTagihan < ($billPaid + $data['nominal'])) {
       return false;
     } else {
-      $no_ref = ((int) $this->getIDTransaksiTahunanTerakhir() + 1);
-      $no_ref = 'THN' . $no_ref;
       $addBayarTahunan = $this->db->insert("tahunan", [
         "sttb" => $data["sttb"],
-        "no_ref" => $no_ref,
         "tahun_akademik" => $data["tahunAkademik"],
         "tanggal" => $data["tanggal"],
         "nominal" => $data["nominal"],
         "id_petugas" => $data["idPetugas"]
+      ]);
+      $last = $this->db->insert_id();
+      $noref = $this->db->where("id", $last)->update("tahunan", [
+        "no_ref" => 'THN' . $last
       ]);
 
       return $addBayarTahunan;
@@ -125,16 +115,19 @@ class BendaharaModel extends CI_Model
     if ($data["kodeTransaksi"] == "4A") {
       $data["tanggalTransaksi"] = "1970-01-01";
     }
-    $no_ref = ((int) $this->getIDTransaksiTerakhir() + 1);
-    $no_ref = 'LN' . $no_ref;
+
     $addPemasukanLainnya = $this->db->insert("transaksi", [
-      "no_ref" => $no_ref,
       "kode" => $data["kodeTransaksi"],
       "keterangan" => $data["keterangan"],
       "tanggal" => $data["tanggalTransaksi"],
       "nominal" => $data["nominalTransaksi"],
       "status" => $data["status"],
       "id_petugas" => $data["idPetugas"]
+    ]);
+
+    $last = $this->db->insert_id();
+    $noref = $this->db->where("id", $last)->update("transaksi", [
+      "no_ref" => 'LN' . $last
     ]);
 
     return $addPemasukanLainnya;
@@ -148,6 +141,11 @@ class BendaharaModel extends CI_Model
       "nominal" => $data["nominalTransaksi"],
       "status" => $data["status"],
       "id_petugas" => $data["idPetugas"]
+    ]);
+
+    $last = $this->db->insert_id();
+    $noref = $this->db->where("id", $last)->update("transaksi", [
+      "no_ref" => 'OUT' . $last
     ]);
 
     return $addPengeluaran;
