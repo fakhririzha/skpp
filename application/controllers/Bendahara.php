@@ -305,6 +305,18 @@ class Bendahara extends CI_Controller
       $this->load->view('bendahara/index', $data);
     }
   }
+  public function laporanPengeluaran()
+  {
+    if ($this->input->post("filterRentang")) {
+      $filterRentang = $this->input->post("tahun") . "-" . $this->input->post("bulan") . "-01";
+      $this->generateLaporanPengeluaran($filterRentang);
+    } else {
+      $data = [
+        "content" => 'bendahara/pages/laporanPengeluaran'
+      ];
+      $this->load->view('bendahara/index', $data);
+    }
+  }
 
   public function generateLaporanSPP($filterRentang)
   {
@@ -410,15 +422,15 @@ class Bendahara extends CI_Controller
 
     $xls->getActiveSheet()->getStyle('D2:D' . $i)
       ->getNumberFormat()
-      ->setFormatCode('Rp#,##0');
+      ->setFormatCode('_("Rp"* #,##0_);_("Rp"* \(#,##0\);_("Rp"* "-"??_);_(@_)');
 
     $xls->getActiveSheet()->getStyle('E2:E' . $i)
       ->getNumberFormat()
-      ->setFormatCode('Rp#,##0');
+      ->setFormatCode('_("Rp"* #,##0_);_("Rp"* \(#,##0\);_("Rp"* "-"??_);_(@_)');
 
     $xls->getActiveSheet()->getStyle('F2:F' . $i)
       ->getNumberFormat()
-      ->setFormatCode('Rp#,##0');
+      ->setFormatCode('_("Rp"* #,##0_);_("Rp"* \(#,##0\);_("Rp"* "-"??_);_(@_)');
 
     foreach (range('A', 'F') as $columnID) {
       $xls->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(TRUE);
@@ -559,7 +571,7 @@ class Bendahara extends CI_Controller
       ->setFormatCode('Rp#,##0');
     $xls->getActiveSheet(0)->getStyle('F2')
       ->getNumberFormat()
-      ->setFormatCode('Rp#,##0');
+      ->setFormatCode('_("Rp"* #,##0_);_("Rp"* \(#,##0\);_("Rp"* "-"??_);_(@_)');
 
     foreach (range('A', 'F') as $columnID) {
       $xls->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(TRUE);
@@ -577,6 +589,97 @@ class Bendahara extends CI_Controller
 
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     header('Content-Disposition: attachment;filename="Laporan Keuangan.xlsx"');
+    header('Cache-Control: max-age=0');
+    // If you're serving to IE 9, then the following may be needed
+    header('Cache-Control: max-age=1');
+
+    // If you're serving to IE over SSL, then the following may be needed
+    header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+    header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+    header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+    header('Pragma: public'); // HTTP/1.0
+
+    $writer = IOFactory::createWriter($xls, 'Xlsx');
+    $writer->save('php://output');
+    exit;
+  }
+  public function generateLaporanPengeluaran($filterRentang)
+  {
+    $tanggal = Carbon::createFromFormat("Y-m-d", $filterRentang);
+    $tanggalAsli = $tanggal->format("Y-m-d");
+    $sebulan = Carbon::createFromFormat("Y-m-d H:i:s", $tanggal->addMonth(1)->subDay(1))->format("Y-m-d");
+    $tanggal = $tanggal->subDay(1);
+
+    $laporanPengeluaran = $this->BendaharaModel->getLaporanPengeluaran($tanggalAsli, $sebulan);
+
+    $xls = new Spreadsheet();
+
+    $xls->getProperties()
+      ->setCreator('Ponpes Mawaridussalam')
+      ->setLastModifiedBy($this->session->username)
+      ->setTitle('Laporan Pengeluaran')
+      ->setSubject('Laporan Pengeluaran');
+
+    // SET DATA DI DOKUMEN
+    $xls->setActiveSheetIndex(0)
+      ->setCellValue('A1', 'NO.')
+      ->setCellValue('B1', 'TANGGAL')
+      ->setCellValue('C1', 'HARI')
+      ->setCellValue('D1', 'PENGELUARAN');
+
+    $i = 2;
+    $num = 1;
+
+    foreach ($laporanPengeluaran as $data) {
+      $hari = Carbon::parse($data->tanggal);
+      $hari = $hari->locale('id_ID')->dayName;
+      $tanggal = DateTime::createFromFormat("Y-m-d", $data->tanggal)->format("d/m/Y");
+
+      $xls->setActiveSheetIndex(0)
+        ->setCellValue('A' . $i, $num)
+        ->setCellValue('B' . $i, $tanggal)
+        ->setCellValue('C' . $i, strtoupper($hari))
+        ->setCellValue('D' . $i, $data->pengeluaran);
+      $i++;
+      $num++;
+    }
+
+    $xls->setActiveSheetIndex(0)
+      ->mergeCells('A' . $i . ':C' . $i)
+      ->setCellValue('A' . $i, 'TOTAL KESELURUHAN')
+      ->setCellValue('D' . $i, '=SUM(D2:D' . ($i - 1) . ')');
+
+    $xls->getActiveSheet()
+      ->getStyle('A1:D1')
+      ->getAlignment('A1:D1')
+      ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
+      ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+    $xls->getActiveSheet()
+      ->getStyle('A2:C' . ($i - 1))
+      ->getAlignment('A2:C' . ($i - 1))
+      ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
+      ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+
+    $xls->getActiveSheet()->getStyle('D2:D' . $i)
+      ->getNumberFormat()
+      ->setFormatCode('_("Rp"* #,##0_);_("Rp"* \(#,##0\);_("Rp"* "-"??_);_(@_)');
+
+    foreach (range('A', 'D') as $columnID) {
+      $xls->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(TRUE);
+    }
+
+    $styleArray = [
+      'borders' => [
+        'allBorders' => [
+          'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
+          'color' => ['rgb' => '000000'],
+        ],
+      ],
+    ];
+    $xls->getActiveSheet()->getStyle('A1:D' . $i)->applyFromArray($styleArray);
+
+    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    header('Content-Disposition: attachment;filename="Laporan Pengeluaran.xlsx"');
     header('Cache-Control: max-age=0');
     // If you're serving to IE 9, then the following may be needed
     header('Cache-Control: max-age=1');

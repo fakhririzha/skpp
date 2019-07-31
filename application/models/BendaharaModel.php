@@ -73,6 +73,10 @@ class BendaharaModel extends CI_Model
   {
     return $this->db->query("SELECT * FROM vLaporanKeuangan WHERE tanggal BETWEEN '$tanggalAsli' AND '$sebulan'")->result();
   }
+  public function getLaporanPengeluaran($tanggalAsli, $sebulan)
+  {
+    return $this->db->query("SELECT * FROM vLaporanPengeluaran WHERE tanggal BETWEEN '$tanggalAsli' AND '$sebulan'")->result();
+  }
 
   // INSERT METHOD
   public function addBayarBulanan($data)

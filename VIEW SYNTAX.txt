@@ -46,3 +46,13 @@ FROM
 GROUP BY
     transaksi.tanggal;
 
+CREATE OR REPLACE VIEW vLaporanPengeluaran AS
+SELECT
+    DATE_FORMAT(transaksi.tanggal, '%d/%m/%Y') AS tanggalFormatted,
+    transaksi.tanggal AS tanggal,
+    laporanPengeluaran(transaksi.nominal, transaksi.kode, 'Pengeluaran') AS kredit,
+    SUM((SELECT kredit)) AS pengeluaran
+FROM
+    transaksi
+GROUP BY
+    transaksi.tanggal;
