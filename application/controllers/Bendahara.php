@@ -85,9 +85,9 @@ class Bendahara extends CI_Controller
   public function hapusBulanan()
   {
     $sttb = $this->input->get("sttb");
-    $id = $this->input->get("id");
+    $no_ref = $this->input->get("no_ref");
 
-    if ($this->BendaharaModel->hapusTransaksiBulananBySttbId($sttb, $id)) {
+    if ($this->BendaharaModel->hapusTransaksiBulananBySttbId($sttb, $no_ref)) {
       $this->session->set_flashdata('suksesMsg', 'Hapus iuran bulanan dengan No. STTB :' . $sttb . ' SUKSES.');
     } else {
       $this->session->set_flashdata('actionMsg', 'Gagal menghapus iuran bulanan.');
@@ -150,6 +150,18 @@ class Bendahara extends CI_Controller
       ];
       $this->load->view('bendahara/index', $data);
     }
+  }
+  public function hapusTahunan()
+  {
+    $sttb = $this->input->get("sttb");
+    $no_ref = $this->input->get("no_ref");
+
+    if ($this->BendaharaModel->hapusTransaksiTahunanBySttbId($sttb, $no_ref)) {
+      $this->session->set_flashdata('suksesMsg', 'Hapus iuran tahunan dengan No. STTB :' . $sttb . ' SUKSES.');
+    } else {
+      $this->session->set_flashdata('actionMsg', 'Gagal menghapus iuran tahunan.');
+    }
+    redirect("bendahara/tahunan");
   }
 
   public function pemasukanLainnya()

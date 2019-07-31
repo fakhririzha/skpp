@@ -54,6 +54,15 @@ $(document).ready(function () {
     });
   }
 
+  if ($("#histori-transaksi-tahunan").length) {
+    $("#histori-transaksi-tahunan").dataTable({
+      'columnDefs': [
+        { 'orderable': false, 'targets': [1, 2, 3, 4, 5, 6] },
+        { 'searchable': false, 'targets': [0, 2, 3, 4, 5, 6] }
+      ]
+    });
+  }
+
   if ($("#number-input").length) {
     new Cleave("#number-input", {
       prefix: 'Rp ',

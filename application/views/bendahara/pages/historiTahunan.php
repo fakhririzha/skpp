@@ -7,7 +7,7 @@
       </div>
       <div class="card-body">
         <div class="table-responsive">
-          <table class="table" id="histori-transaksi-bulanan">
+          <table class="table" id="histori-transaksi-tahunan">
             <thead class="text-primary thead-dark">
               <tr>
                 <th rowspan="2" scope="col" class="text-center">ID</th>

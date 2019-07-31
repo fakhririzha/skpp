@@ -162,4 +162,12 @@ class BendaharaModel extends CI_Model
 
     return $count;
   }
+  public function hapusTransaksiTahunanBySttbId($sttb, $no_ref)
+  {
+    $this->db->where("sttb", $sttb)->where("no_ref", $no_ref)->delete("tahunan");
+    $count = $this->db->affected_rows();
+    $this->db->where("no_ref", $no_ref)->delete("transaksi");
+
+    return $count;
+  }
 }
