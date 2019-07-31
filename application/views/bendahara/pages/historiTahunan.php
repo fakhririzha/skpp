@@ -3,6 +3,22 @@
     <div class="card">
       <div class="card-header">
         <h4 class="card-title product-sans">Histori Transaksi Pondok Pesantren Mawaridussalam</h4>
+        <?php if ($this->session->suksesMsg != "") : ?>
+          <hr>
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <?= $this->session->flashdata('suksesMsg') ?>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        <?php elseif ($this->session->actionMsg != "") : ?>
+          <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <?= $this->session->flashdata('actionMsg') ?>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        <?php endif; ?>
         <hr>
       </div>
       <div class="card-body">

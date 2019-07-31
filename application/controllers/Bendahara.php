@@ -52,8 +52,9 @@ class Bendahara extends CI_Controller
   public function bayarBulanan()
   {
     if ($this->input->post("bayarBulanan")) {
+      $sttb = $this->input->post("sttb_x");
       $data = [
-        "sttb" => $this->input->post("sttb_x"),
+        "sttb" => $sttb,
         "nama" => $this->input->post("nama"),
         "tahunAkademik" => $this->input->post("tahunAkademik"),
         "semester" => $this->input->post("semester"),
@@ -68,7 +69,7 @@ class Bendahara extends CI_Controller
       } else {
         $this->session->set_flashdata('actionMsg', 'Gagal memasukkan iuran bulanan. Anda mungkin telah membayar untuk bulan tersebut.');
       }
-      redirect("bendahara/bulanan");
+      redirect("bendahara/historiBulanan?sttb=$sttb");
     } else {
       $sttb = $this->input->get("sttb");
 
@@ -92,7 +93,7 @@ class Bendahara extends CI_Controller
     } else {
       $this->session->set_flashdata('actionMsg', 'Gagal menghapus iuran bulanan.');
     }
-    redirect("bendahara/bulanan");
+    redirect("bendahara/historiBulanan?sttb=$sttb");
   }
 
   public function tahunan()
@@ -124,8 +125,9 @@ class Bendahara extends CI_Controller
       $nominal = $this->input->post("nominalBayar");
       $nominal = str_replace("Rp ", "", $nominal);
       $nominal = str_replace(",", "", $nominal);
+      $sttb = $this->input->post("sttb_x");
       $data = [
-        "sttb" => $this->input->post("sttb_x"),
+        "sttb" => $sttb,
         "nama" => $this->input->post("nama"),
         "tahunAkademik" => $this->input->post("tahunAkademik"),
         "tanggal" => $this->input->post("tanggalBayar"),
@@ -138,7 +140,7 @@ class Bendahara extends CI_Controller
       } else {
         $this->session->set_flashdata('actionMsg', 'Gagal memasukkan iuran tahunan karena nominal yang anda masukkan melebihi total tagihan.');
       }
-      redirect("bendahara/tahunan");
+      redirect("bendahara/historiTahunan?sttb=$sttb");
     } else {
       $sttb = $this->input->get("sttb");
 
@@ -161,7 +163,7 @@ class Bendahara extends CI_Controller
     } else {
       $this->session->set_flashdata('actionMsg', 'Gagal menghapus iuran tahunan.');
     }
-    redirect("bendahara/tahunan");
+    redirect("bendahara/historiTahunan?sttb=$sttb");
   }
 
   public function pemasukanLainnya()
