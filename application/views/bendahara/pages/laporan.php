@@ -53,6 +53,16 @@
               </div>
             </div>
           </div>
+          <div class="col-lg-4 col-md-6">
+            <div class="card card-chart orange-main text-white">
+              <div class="card-header">
+                <h4 class="card-title f-med"><i class="now-ui-icons business_money-coins"></i> Laporan Detail</h4>
+              </div>
+              <div class="card-body text-right">
+                <a href="<?= base_url() ?>bendahara/laporanDetail" class="btn btn-info navy-gradient">Klik</a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="card-footer">

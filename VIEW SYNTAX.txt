@@ -1,20 +1,37 @@
 CREATE OR REPLACE VIEW vSiswaKelas AS
 SELECT s.sttb, s.nama, s.kode_kelas, s.status, k.semester, k.tahun_akademik, k.iuran_bulanan, k.iuran_bulanan_subsidi, k.iuran_tahunan FROM siswa s LEFT JOIN kelas k ON s.kode_kelas = k.kode_kelas;
 
+====================================================================================
+
 CREATE OR REPLACE VIEW vHistoriTransaksi AS
 SELECT t.*, u.nama FROM transaksi t, user u WHERE t.id_petugas = u.id;
+
+====================================================================================
+
 
 CREATE OR REPLACE VIEW vHistoriTransaksiBulanan AS
 SELECT (s.nama) AS namaSiswa, (s.sttb) AS sttbSiswa, b.* FROM bulanan b, siswa s WHERE s.sttb = b.sttb;
 
+====================================================================================
+
+
 CREATE OR REPLACE VIEW vHistoriTransaksiTahunan AS
 SELECT (s.nama) AS namaSiswa, (s.sttb) AS sttbSiswa, b.* FROM tahunan b, siswa s WHERE s.sttb = b.sttb;
+
+====================================================================================
+
 
 CREATE OR REPLACE VIEW vPenerimaanPutra AS
 SELECT tanggal, (SUM(nominal)) AS penerimaanPutra FROM transaksi WHERE kode = '1A' GROUP BY tanggal;
 
+====================================================================================
+
+
 CREATE OR REPLACE VIEW vPenerimaanPutri AS
 SELECT tanggal, (SUM(nominal)) AS penerimaanPutra FROM transaksi WHERE kode = '2A' GROUP BY tanggal;
+
+====================================================================================
+
 
 CREATE OR REPLACE VIEW vLaporanSPP AS
 SELECT
@@ -28,9 +45,12 @@ SELECT
 FROM
     transaksi
 WHERE
-    ((transaksi.kode = '1A') OR(transaksi.kode` = '2A'))
+    ((transaksi.kode = '1A') OR (transaksi.kode = '2A'))
 GROUP BY
     transaksi.tanggal;
+
+====================================================================================
+
 
 CREATE OR REPLACE VIEW vLaporanKeuangan AS
 SELECT
@@ -46,6 +66,9 @@ FROM
 GROUP BY
     transaksi.tanggal;
 
+====================================================================================
+
+
 CREATE OR REPLACE VIEW vLaporanPengeluaran AS
 SELECT
     DATE_FORMAT(transaksi.tanggal, '%d/%m/%Y') AS tanggalFormatted,
@@ -56,3 +79,41 @@ FROM
     transaksi
 GROUP BY
     transaksi.tanggal;
+
+====================================================================================
+
+
+CREATE OR REPLACE VIEW vLaporanDetail AS
+SELECT
+    DATE_FORMAT(transaksi.tanggal, '%d/%m/%Y') AS tanggalFormatted,
+    transaksi.tanggal AS tanggal,
+    transaksi.keterangan,
+    hitungLaporanDetail(transaksi.nominal, transaksi.kode, 'Debit') AS ddebit,
+    hitungLaporanDetail(transaksi.nominal, transaksi.kode, 'Kredit') AS kkredit,
+    SUM((SELECT ddebit)) AS debit,
+    SUM((SELECT kkredit)) AS kredit
+FROM
+    transaksi
+WHERE
+	kode LIKE '%B' OR kode = '3A';
+
+====================================================================================
+
+    
+CREATE OR REPLACE VIEW vLaporanDetailPenerimaan AS
+SELECT
+    DATE_FORMAT(transaksi.tanggal, '%d/%m/%Y') AS tanggalFormatted,
+    transaksi.tanggal AS tanggal,
+    penerimaanSPP(transaksi.nominal, transaksi.kode, 'Putra') AS putra,
+    penerimaanSPP(transaksi.nominal, transaksi.kode, 'Putri') AS putri,
+    SUM((SELECT putra)) AS penerimaanPutra,
+    SUM((SELECT putri)) AS penerimaanPutri
+FROM
+    transaksi
+WHERE
+    ((transaksi.kode = '1A') OR (transaksi.kode = '2A'))
+GROUP BY
+    transaksi.tanggal;
+
+====================================================================================
+
