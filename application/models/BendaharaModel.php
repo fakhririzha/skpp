@@ -93,6 +93,18 @@ class BendaharaModel extends CI_Model
   {
     return $this->db->query("SELECT * FROM vLaporanDetailPenerimaan WHERE tanggal = '$tanggal'")->result();
   }
+  public function getPenerimaanPutra($tanggalAsli, $sebulan)
+  {
+    return $this->db->query("SELECT SUM(penerimaanPutra) AS putra FROM vPenerimaanPutra WHERE tanggal BETWEEN '$tanggalAsli' AND '$sebulan'")->row();
+  }
+  public function getPenerimaanPutri($tanggalAsli, $sebulan)
+  {
+    return $this->db->query("SELECT SUM(penerimaanPutri) AS putri FROM vPenerimaanPutri WHERE tanggal BETWEEN '$tanggalAsli' AND '$sebulan'")->row();
+  }
+  public function getPengeluaranByKode($tanggalAsli, $sebulan, $kode)
+  {
+    return $this->db->query("SELECT SUM(nominal) AS jumlah FROM transaksi WHERE kode = '$kode' AND tanggal BETWEEN '$tanggalAsli' AND '$sebulan'")->row();
+  }
 
   // INSERT METHOD
   public function addBayarBulanan($data)

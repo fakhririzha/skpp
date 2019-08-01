@@ -1,3 +1,6 @@
+if (window.history.replaceState) {
+  window.history.replaceState(null, null, window.location.href);
+}
 $(document).ready(function () {
 
   if ($("#list-user").length) {

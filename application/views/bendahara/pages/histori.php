@@ -29,8 +29,9 @@
                   <td class="text-center">
                     <?= DateTime::createFromFormat("Y-m-d", $trx->tanggal)->format("d-m-Y") ?>
                   </td>
-                  <td class="text-right">Rp. <?= $trx->nominal ?></td>
-                  <td class="text-center"><?= strtoupper($trx->status) ?></td>
+                  <td class="text-center">Rp. <?= $trx->nominal ?></td>
+                  <td class="text-center"><?= 'Selesai' ?></td>
+                  <!-- <td class="text-center"><?= strtoupper($trx->status) ?></td> -->
                   <td class="text-center"><?= $trx->nama ?></td>
                 </tr>
 
