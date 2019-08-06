@@ -21,6 +21,15 @@ $(document).ready(function () {
     });
   }
 
+  if ($("#list-kelas").length) {
+    $("#list-kelas").dataTable({
+      'columnDefs': [
+        { 'orderable': false, 'targets': [1, 2, 6, 7] },
+        { 'searchable': false, 'targets': [3, 4, 5, 6, 7] }
+      ]
+    });
+  }
+
   if ($("#iuran-bulanan").length) {
     $("#iuran-bulanan").dataTable({
       'columnDefs': [
