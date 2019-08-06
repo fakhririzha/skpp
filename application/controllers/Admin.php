@@ -230,4 +230,14 @@ class Admin extends CI_Controller
       redirect("admin/kelas");
     }
   }
+  public function hapusKelas()
+  {
+    $kode_kelas = str_replace("%20", " ", $this->input->get("kode_kelas"));
+    if ($this->AdminModel->hapusKelas($kode_kelas) > 0) {
+      $this->session->set_flashdata('suksesMsg', 'Sukses menghapus kelas : ' . $kode_kelas . '.');
+    } else {
+      $this->session->set_flashdata('actionMsg', 'Gagal menghapus kelas.');
+    }
+    redirect("admin/kelas");
+  }
 }

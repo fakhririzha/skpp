@@ -100,8 +100,8 @@
                       <a class="btn btn-success text-white" href="<?= base_url() ?>admin/editKelas?kode_kelas=<?= $kelas->kode_kelas ?>"><i class="fas fa-pencil-alt"></i> Ubah</a>
                     </td>
                     <td class="text-center">
-                      <button class="btn btn-danger text-white" data-toggle="modal" data-target="#hapus-kelas-modal"><i class="fas fa-trash-alt"></i> Hapus</button>
-                      <div class="modal fade" id="hapus-kelas-modal" tabindex="-1" role="dialog" aria-labelledby="hapus-kelas-modal-label" aria-hidden="true">
+                      <button class="btn btn-danger text-white" data-toggle="modal" data-target="#hapus-kelas-<?= str_replace(" ", "", $kelas->kode_kelas) ?>-modal"><i class="fas fa-trash-alt"></i> Hapus</button>
+                      <div class="modal fade" id="hapus-kelas-<?= str_replace(" ", "", $kelas->kode_kelas) ?>-modal" tabindex="-1" role="dialog" aria-labelledby="hapus-kelas-modal-label" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                           <div class="modal-content">
                             <div class="modal-header">

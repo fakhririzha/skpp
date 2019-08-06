@@ -174,4 +174,11 @@ class AdminModel extends CI_Model
 
     return $count;
   }
+  public function hapusKelas($kode_kelas)
+  {
+    $this->db->where("kode_kelas", $kode_kelas)->delete("kelas");
+    $count = $this->db->affected_rows();
+
+    return $count;
+  }
 }
