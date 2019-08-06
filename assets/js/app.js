@@ -84,6 +84,24 @@ $(document).ready(function () {
       numeralPositiveOnly: true
     });
   }
+  if ($("#number-input-2").length) {
+    new Cleave("#number-input-2", {
+      prefix: 'Rp ',
+      noImmediatePrefix: true,
+      numeral: true,
+      numeralThousandsGroupStyle: 'thousand',
+      numeralPositiveOnly: true
+    });
+  }
+  if ($("#number-input-3").length) {
+    new Cleave("#number-input-3", {
+      prefix: 'Rp ',
+      noImmediatePrefix: true,
+      numeral: true,
+      numeralThousandsGroupStyle: 'thousand',
+      numeralPositiveOnly: true
+    });
+  }
 
   if ($("#date-input").length) {
 

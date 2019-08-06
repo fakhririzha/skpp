@@ -192,9 +192,42 @@ class Admin extends CI_Controller
       "kelass" => $this->AdminModel->getAllKelas(),
       "content" => "admin/pages/kelas",
       "cssFiles" => ["datatables.min.css"],
-      "jsFiles" => ["datatables.min.js"]
+      "jsFiles" => ["datatables.min.js", "cleave.min.js"]
     ];
 
     $this->load->view('admin/index', $data);
+  }
+  public function addKelas()
+  {
+    if ($this->input->post('addKelas')) {
+      $iuranBulanan = str_replace("Rp ", "", $this->input->post("iuranBulanan"));
+      $iuranBulanan = str_replace(",", "", $iuranBulanan);
+      $iuranBulananSubsidi = str_replace("Rp ", "", $this->input->post("iuranBulananSubsidi"));
+      $iuranBulananSubsidi = str_replace(",", "", $iuranBulananSubsidi);
+      $iuranTahunan = str_replace("Rp ", "", $this->input->post("iuranTahunan"));
+      $iuranTahunan = str_replace(",", "", $iuranTahunan);
+
+      if ($iuranBulanan == "" || $iuranBulananSubsidi == "" || $iuranTahunan == "" || $iuranBulanan == "0" || $iuranBulananSubsidi == "0" || $iuranTahunan == "0") {
+        $this->session->set_flashdata('actionMsg', "$iuranBulanan, $iuranBulananSubsidi, $iuranTahunan");
+        redirect("admin/kelas");
+      } else {
+        $data = [
+          'kodeKelas' => $this->input->post('kodeKelas'),
+          'iuranBulanan' => $iuranBulanan,
+          'iuranBulananSubsidi' => $iuranBulananSubsidi,
+          'iuranTahunan' => $iuranTahunan
+        ];
+        if ($this->AdminModel->addKelas($data)) {
+          $this->session->set_flashdata('suksesMsg', 'Sukses menambahkan kelas : ' . $data["kodeKelas"] . '.');
+        } else if (!$this->AdminModel->addKelas($data)) {
+          $this->session->set_flashdata('actionMsg', 'Kelas dengan kode "' . $data["kodeKelas"] . '" telah ada. Silahkan periksa kembali.');
+        } else {
+          $this->session->set_flashdata('actionMsg', 'Gagal menambahkan kelas.');
+        }
+        redirect("admin/kelas");
+      }
+    } else {
+      redirect("admin/kelas");
+    }
   }
 }

@@ -48,6 +48,10 @@ class AdminModel extends CI_Model
   {
     return $this->db->where("sttb", $sttb)->get("siswa")->row();
   }
+  public function getSemesterTahunAkademikAktif()
+  {
+    return $this->db->query("SELECT semester, tahun_akademik FROM kelas LIMIT 1")->row();
+  }
 
   // INSERT METHOD
   public function addUser($data)
@@ -85,6 +89,25 @@ class AdminModel extends CI_Model
       ]);
 
       return $addSiswa;
+    }
+  }
+  public function addKelas($data)
+  {
+    $checkKelas = $this->db->where("kode_kelas", $data["kodeKelas"])->get("kelas");
+    if ($checkKelas->num_rows() > 0) {
+      return false;
+    } else {
+
+      $addKelas = $this->db->insert("kelas", [
+        "kode_kelas" => $data["kodeKelas"],
+        "semester" => $this->getSemesterTahunAkademikAktif()->semester,
+        "tahun_akademik" => $this->getSemesterTahunAkademikAktif()->tahun_akademik,
+        "iuran_bulanan" => $data["iuranBulanan"],
+        "iuran_bulanan_subsidi" => $data["iuranBulananSubsidi"],
+        "iuran_tahunan" => $data["iuranTahunan"]
+      ]);
+
+      return $addKelas;
     }
   }
 

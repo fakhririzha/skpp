@@ -19,60 +19,43 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
+          <hr>
         <?php endif; ?>
-        <hr>
-        <button class="btn btn-success" data-toggle="modal" data-target="#add-siswa-modal"><i class="fas fa-user-plus"></i> Tambah Kelas</button>
+        <button class="btn btn-success" data-toggle="modal" data-target="#add-kelas-modal"><i class="fas fa-user-plus"></i> Tambah Kelas</button>
         <hr>
 
         <!-- FORM UNTUK ADD KELAS -->
-        <div class="modal fade" id="add-siswa-modal" tabindex="-1" role="dialog" aria-labelledby="add-siswa-modal-label" aria-hidden="true">
+        <div class="modal fade" id="add-kelas-modal" tabindex="-1" role="dialog" aria-labelledby="add-kelas-modal-label" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="add-siswa-modal-label">Tambahkan siswa</h5>
+                <h5 class="modal-title" id="add-kelass-modal-label">Tambahkan siswa</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
               <div class="modal-body">
-                <form action="<?= base_url() ?>admin/addSiswa" method="POST">
+                <form action="<?= base_url() ?>admin/addKelas" method="POST">
 
                   <div class="form-group">
-                    <label for="sttb">No. STTB</label>
-                    <input type="number" class="form-control" name="sttb" placeholder="Masukkan No. STTB" required autofocus>
+                    <label for="kodeKelas">Kode Kelas</label>
+                    <input type="text" class="form-control" name="kodeKelas" placeholder="Masukkan Kode Kelas" required autofocus>
                   </div>
                   <div class="form-group">
-                    <label for="nama">Nama</label>
-                    <input type="text" class="form-control" name="nama" placeholder="Masukkan nama" required>
+                    <label for="iuranBulanan">Iuran Bulanan</label>
+                    <input type="text" id="number-input" class="form-control" name="iuranBulanan" placeholder="Masukkan Iuran Bulanan" required autofocus>
                   </div>
                   <div class="form-group">
-                    <label for="kodeKelas">Kelas</label>
-                    <select name="kodeKelas" class="custom-select form-control" required>
-                      <option value="">Pilih kelas</option>
-                      <?php foreach ($kelass as $kelas) : ?>
-                        <option value="<?= $kelas->kode_kelas ?>"><?= $kelas->kode_kelas ?></option>
-                      <?php endforeach; ?>
-                    </select>
+                    <label for="iuranBulananSubsidi">Iuran Bulanan Subsidi</label>
+                    <input type="text" id="number-input-2" class="form-control" name="iuranBulananSubsidi" placeholder="Masukkan Iuran Bulanan Subsidi" required autofocus>
                   </div>
                   <div class="form-group">
-                    <label for="jenisKelamin">Jenis Kelamin</label>
-                    <select name="jenisKelamin" class="custom-select form-control" required>
-                      <option value="">Pilih jenis kelamin</option>
-                      <option value="laki-laki">Laki-Laki</option>
-                      <option value="perempuan">Perempuan</option>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label for="status">Status</label>
-                    <select name="status" class="custom-select form-control" required>
-                      <option value="">Pilih status subsidi</option>
-                      <option value="subsidi">Subsidi</option>
-                      <option value="non-subsidi">Non-subsidi</option>
-                    </select>
+                    <label for="iuranTahunan">Iuran Tahunan</label>
+                    <input type="text" id="number-input-3" class="form-control" name="iuranTahunan" placeholder="Masukkan Iuran Tahunan" required autofocus>
                   </div>
 
                   <div class="card-footer text-center">
-                    <input class="btn btn-primary btn-block" type="submit" name="addSiswa" value="Simpan">
+                    <input class="btn btn-primary btn-block" type="submit" name="addKelas" value="Simpan">
                   </div>
                 </form>
               </div>
