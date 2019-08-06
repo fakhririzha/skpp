@@ -53,7 +53,29 @@
                     <a class="btn btn-success text-white" href="<?= base_url() ?>bendahara/cetakTahunan?sttb=<?= $trx->sttbSiswa ?>&no_ref=<?= $trx->no_ref ?>"><i class="fas fa-print"></i> Cetak</a>
                   </td>
                   <td class="text-center">
-                    <a class="btn btn-danger text-white" href="<?= base_url() ?>bendahara/hapusTahunan?sttb=<?= $trx->sttbSiswa ?>&no_ref=<?= $trx->no_ref ?>"><i class="fas fa-trash-alt"></i> Hapus</a>
+                    <button class="btn btn-danger text-white" data-toggle="modal" data-target="#hapus-tahunan-<?= $trx->no_ref ?>-modal"><i class="fas fa-trash-alt"></i> Hapus</button>
+                    <!--  -->
+                    <div class="modal fade" id="hapus-tahunan-<?= $trx->no_ref ?>-modal" tabindex="-1" role="dialog" aria-labelledby="hapus-kelas-modal-label" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="hapus-kelas-modal-label">Konfirmasi Hapus Iuran Tahunan</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            <p>Apakah anda yakin akan menghapus iuran bulanan dengan No. Ref <?= $trx->no_ref ?> ?</p>
+                            <p>Aksi ini tidak dapat dibatalkan setelah anda menekan tombol hapus!</p>
+                          </div>
+                          <div class="modal-footer">
+                            <a href="<?= base_url() ?>bendahara/hapusTahunan?sttb=<?= $trx->sttbSiswa ?>&no_ref=<?= $trx->no_ref ?>" class="btn btn-danger text-white"> Hapus</a>
+                            &nbsp;&nbsp;|&nbsp;&nbsp;
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </td>
                 </tr>
 
