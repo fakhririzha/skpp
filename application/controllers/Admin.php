@@ -7,6 +7,8 @@ class Admin extends CI_Controller
   {
     parent::__construct();
     $this->load->model("AdminModel");
+    $this->load->helper("form");
+    $this->load->library("upload");
     if ($this->session->jabatan == "bendahara") {
       redirect("bendahara");
     } elseif ($this->session->jabatan != "admin") {
@@ -282,5 +284,97 @@ class Admin extends CI_Controller
       $this->session->set_flashdata('actionMsg', 'Gagal menghapus kelas.');
     }
     redirect("admin/kelas");
+  }
+
+  public function importSiswa()
+  {
+    $namaFile = $this->input->get("file");
+    if ($namaFile) {
+
+      $namaFile = str_replace("%20", " ", $namaFile);
+      $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader('Xlsx');
+      $reader->setReadDataOnly(TRUE);
+      $readXlsx = $reader->load("assets/file/" . $namaFile);
+
+      $xls = $readXlsx->getActiveSheet();
+
+      $x = 2;
+      $siswa = [];
+
+      for ($i = 2; $i < 105; $i++) {
+        $end = (string) $xls->getCell("A" . $i)->getValue();
+        // echo $end === 1;
+        if ($end != "#" && $end != null && $end != "") {
+          array_push($siswa, [
+            'sttb' => $xls->getCell("B" . $i)->getValue(),
+            'nama' => $xls->getCell("C" . $i)->getValue(),
+            'jenis_kelamin' => $xls->getCell("D" . $i)->getValue(),
+            'status' => $xls->getCell("E" . $i)->getValue()
+          ]);
+        } else {
+          break;
+        }
+      }
+
+      if ($this->AdminModel->addSiswaImport($siswa)[0]) {
+
+        $data = [
+          "content" => 'admin/pages/importSiswa',
+          "siswa" => $this->AdminModel->addSiswaImport($siswa)[1],
+          "jsFiles" => ["datatables.min.js"],
+          "cssFiles" => ["datatables.min.css"]
+        ];
+        $this->load->view('admin/index', $data);
+      }
+      // 
+      else {
+        $data = [
+          "content" => 'admin/pages/importSiswa'
+        ];
+        $this->load->view('admin/index', $data);
+      }
+    }
+    // 
+    else {
+      $data = [
+        "content" => 'admin/pages/importSiswa'
+      ];
+      $this->load->view('admin/index', $data);
+    }
+  }
+  public function downloadTemplate()
+  {
+    $this->load->helper("download");
+
+    force_download("assets/file/TEMPLATE.xlsx", NULL);
+  }
+  public function uploadFileTemplate()
+  {
+    $config['upload_path'] = './assets/file';
+    $config['allowed_types'] = 'xlsx';
+    $config['overwrite'] = TRUE;
+
+    $this->upload->initialize($config);
+
+    // GAGAL
+    if (!$this->upload->do_upload('customFile')) {
+      $error = array('error' => $this->upload->display_errors());
+      $this->session->set_flashdata('actionMsg', $error);
+      redirect("admin/importSiswa");
+    }
+    // BERHASIL
+    else {
+      $data = array('upload_data' => $this->upload->data());
+      $this->session->set_flashdata('suksesMsg', 'Sukses menambahkan file');
+      redirect("admin/importSiswa?file=" . $data["upload_data"]["file_name"]);
+    }
+  }
+  public function test()
+  {
+    $array = [];
+
+    array_push($array, ['sttb' => 'bacot', 'nama' => 'test']);
+    echo $array[0]['sttb'];
+    var_dump($array);
   }
 }

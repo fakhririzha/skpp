@@ -21,6 +21,15 @@ $(document).ready(function () {
     });
   }
 
+  if ($("#list-siswa-import").length) {
+    $("#list-siswa-import").dataTable({
+      'columnDefs': [
+        { 'orderable': false, 'targets': [2, 3, 4] },
+        { 'searchable': false, 'targets': [2, 3, 4] }
+      ]
+    });
+  }
+
   if ($("#list-kelas").length) {
     $("#list-kelas").dataTable({
       'columnDefs': [
