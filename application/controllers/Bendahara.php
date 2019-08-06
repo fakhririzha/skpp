@@ -639,12 +639,12 @@ class Bendahara extends CI_Controller
 
     $xls = new Spreadsheet();
 
-    $drawing = new Drawing();
-    $drawing->setName('Logo');
-    $drawing->setDescription('Logo');
-    $drawing->setPath('captcha/1564542478.9699.jpg'); // put your path and image here
-    $drawing->setCoordinates('A1');
-    $drawing->setWorksheet($xls->getActiveSheet());
+    // $drawing = new Drawing();
+    // $drawing->setName('Logo');
+    // $drawing->setDescription('Logo');
+    // $drawing->setPath('captcha/1564542478.9699.jpg'); // put your path and image here
+    // $drawing->setCoordinates('A1');
+    // $drawing->setWorksheet($xls->getActiveSheet());
 
     $xls->getProperties()
       ->setCreator('Ponpes Mawaridussalam')

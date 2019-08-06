@@ -60,6 +60,24 @@
               <p>Manajemen Siswa</p>
             </a>
           </li>
+          <li>
+            <a href="<?= base_url() ?>admin/kelas">
+              <i class="fas fa-grip-horizontal"></i>
+              <p>Manajemen Kelas</p>
+            </a>
+          </li>
+          <li>
+            <a href="<?= base_url() ?>admin/pembagianKelas">
+              <i class="fas fa-address-book"></i>
+              <p>Pembagian Kelas</p>
+            </a>
+          </li>
+          <li>
+            <a href="<?= base_url() ?>admin/importSiswa">
+              <i class="fas fa-upload"></i>
+              <p>Import data Siswa</p>
+            </a>
+          </li>
         </ul>
       </div>
     </div>

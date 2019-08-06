@@ -185,4 +185,16 @@ class Admin extends CI_Controller
     }
     redirect("admin/siswa");
   }
+
+  public function kelas()
+  {
+    $data = [
+      "kelass" => $this->AdminModel->getAllKelas(),
+      "content" => "admin/pages/kelas",
+      "cssFiles" => ["datatables.min.css"],
+      "jsFiles" => ["datatables.min.js"]
+    ];
+
+    $this->load->view('admin/index', $data);
+  }
 }
