@@ -230,6 +230,49 @@ class Admin extends CI_Controller
       redirect("admin/kelas");
     }
   }
+  public function editKelas()
+  {
+    if ($this->input->post("editKelas")) {
+      $iuranBulanan = str_replace("Rp ", "", $this->input->post("iuranBulanan"));
+      $iuranBulanan = str_replace(",", "", $iuranBulanan);
+      $iuranBulananSubsidi = str_replace("Rp ", "", $this->input->post("iuranBulananSubsidi"));
+      $iuranBulananSubsidi = str_replace(",", "", $iuranBulananSubsidi);
+      $iuranTahunan = str_replace("Rp ", "", $this->input->post("iuranTahunan"));
+      $iuranTahunan = str_replace(",", "", $iuranTahunan);
+
+      if ($iuranBulanan == "" || $iuranBulananSubsidi == "" || $iuranTahunan == "" || $iuranBulanan == "0" || $iuranBulananSubsidi == "0" || $iuranTahunan == "0") {
+        $this->session->set_flashdata('actionMsg', "$iuranBulanan, $iuranBulananSubsidi, $iuranTahunan");
+        redirect("admin/kelas");
+      } else {
+        $data = [
+          'kodeKelas' => $this->input->post('kodeKelas'),
+          'iuranBulanan' => $iuranBulanan,
+          'iuranBulananSubsidi' => $iuranBulananSubsidi,
+          'iuranTahunan' => $iuranTahunan
+        ];
+        if ($this->AdminModel->editKelas($data)) {
+          $this->session->set_flashdata('suksesMsg', 'Sukses mengubah informasi kelas : ' . $data["kodeKelas"] . '.');
+          redirect("admin/kelas");
+        } else if (!$this->AdminModel->editKelas($data)) {
+          $this->session->set_flashdata('actionMsg', 'Kelas dengan kode "' . $data["kodeKelas"] . '" telah ada. Silahkan periksa kembali.');
+          redirect("admin/editKelas?kode_kelas=" . $data["kodeKelas"]);
+        } else {
+          $this->session->set_flashdata('actionMsg', 'Gagal mengubah informasi kelas.');
+          redirect("admin/editKelas?kode_kelas=" . $data["kodeKelas"]);
+        }
+      }
+    } else {
+      $kode_kelas = str_replace("%20", " ", $this->input->get("kode_kelas"));
+
+      $data = [
+        "kelas" => $this->AdminModel->getKelasByKodeKelas($kode_kelas),
+        "content" => "admin/pages/editKelas",
+        "jsFiles" => ["cleave.min.js"]
+      ];
+
+      $this->load->view('admin/index', $data);
+    }
+  }
   public function hapusKelas()
   {
     $kode_kelas = str_replace("%20", " ", $this->input->get("kode_kelas"));
