@@ -56,6 +56,10 @@ class AdminModel extends CI_Model
   {
     return $this->db->where("kode_kelas", $kode_kelas)->get("kelas")->row();
   }
+  public function getAllSiswaBelumAdaKelas()
+  {
+    return $this->db->where("kode_kelas", "")->get("siswa")->result();
+  }
 
   // INSERT METHOD
   public function addUser($data)
@@ -195,6 +199,22 @@ class AdminModel extends CI_Model
       return $updateKelas;
     } else {
       return false;
+    }
+  }
+  public function updateKelasSiswaBulk($listToAdd, $kelas)
+  {
+    foreach ($listToAdd as $sttb) {
+      if ($this->db->where("sttb", $sttb)->where("kode_kelas", $kelas)->get("pembagian_kelas")->num_rows() < 1) {
+        $this->db->insert("pembagian_kelas", [
+          "sttb" => $sttb,
+          "kode_kelas" => $kelas,
+          "tahun_akademik" => $this->getSemesterTahunAkademikAktif()->tahun_akademik,
+          "status" => "aktif"
+        ]);
+        $this->db->where("sttb", $sttb)->update("siswa", [
+          "kode_kelas" => $kelas
+        ]);
+      }
     }
   }
 

@@ -30,6 +30,15 @@ $(document).ready(function () {
     });
   }
 
+  if ($("#list-pembagian-kelas").length) {
+    $("#list-pembagian-kelas").dataTable({
+      'columnDefs': [
+        { 'orderable': false, 'targets': [0, 3, 4] },
+        { 'searchable': false, 'targets': [0, 3, 4] }
+      ]
+    });
+  }
+
   if ($("#list-kelas").length) {
     $("#list-kelas").dataTable({
       'columnDefs': [

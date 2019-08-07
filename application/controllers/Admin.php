@@ -371,6 +371,31 @@ class Admin extends CI_Controller
       redirect("admin/importSiswa?file=" . $data["upload_data"]["file_name"]);
     }
   }
+
+  public function pembagianKelas()
+  {
+    $data = [
+      "kelass" => $this->AdminModel->getAllKelas(),
+      "content" => "admin/pages/pembagianKelas",
+      "cssFiles" => ["datatables.min.css"],
+      "jsFiles" => ["datatables.min.js"],
+      "siswas" => $this->AdminModel->getAllSiswaBelumAdaKelas()
+    ];
+
+    $this->load->view('admin/index', $data);
+  }
+  public function pembagianKelasAction()
+  {
+    if ($this->input->post("simpanSiswa")) {
+      $listToAdd = $this->input->post("sttb");
+      $kelas = $this->input->post("kelas");
+
+      $this->AdminModel->updateKelasSiswaBulk($listToAdd, $kelas);
+      $this->session->set_flashdata("suksesMsg", "Berhasil menambahkan siswa pada kelas " . $kelas);
+      redirect("admin/pembagianKelas");
+    }
+  }
+
   public function test()
   {
     $array = [];
