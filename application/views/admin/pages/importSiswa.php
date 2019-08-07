@@ -19,14 +19,13 @@
 
           <br /><br />
 
-          <input type="submit" class="btn btn-primary" value="upload" />
+          <input type="submit" class="btn btn-primary" value="Upload" />
           <hr>
         </form>
         <?php if (isset($siswa)) : ?>
 
           <h3>HASIL IMPORT</h3>
           <hr>
-
           <div class="table-responsive">
             <table class="table" id="list-siswa-import">
               <thead class="text-primary thead-dark">

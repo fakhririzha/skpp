@@ -2,7 +2,7 @@
   <div class="col-md-12">
     <div class="card">
       <div class="card-header">
-        <h4 class="card-title product-sans">Laporan Detail</h4>
+        <h4 class="card-title product-sans">Laporan Per Kategori</h4>
         <hr>
         <form action="" method="POST">
           <div class="row">

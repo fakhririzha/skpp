@@ -79,29 +79,22 @@ class AdminModel extends CI_Model
   }
   public function addSiswaImport($data)
   {
-    $this->db->trans_begin();
     $count = count($data);
     for ($i = 0; $i < $count; $i++) {
       if ($this->db->where("sttb", $data[$i]["sttb"])->get("siswa")->num_rows() < 1) {
-        $this->db->insert("siswa", [
+        $insert = $this->db->insert("siswa", [
           "sttb" => $data[$i]["sttb"],
           "nama" => $data[$i]["nama"],
           "kode_kelas" => "",
           "jenis_kelamin" => $data[$i]["jenis_kelamin"],
           "status" => $data[$i]["status"]
         ]);
-        array_push($data[$i], ["sukses" => "sukses"]);
+        array_push($data[$i], ["sukses" => "Sukses"]);
       } else {
-        array_push($data[$i], ["sukses" => "gagal (data duplikat)"]);
+        array_push($data[$i], ["sukses" => "Gagal (data duplikat)"]);
       }
     }
-    if ($this->db->trans_status() === FALSE) {
-      $this->db->trans_rollback();
-      return [false, $data];
-    } else {
-      $this->db->trans_commit();
-      return [true, $data];
-    }
+    return [true, $data];
   }
   public function addSiswa($data)
   {

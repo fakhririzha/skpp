@@ -289,7 +289,7 @@ class Admin extends CI_Controller
   public function importSiswa()
   {
     $namaFile = $this->input->get("file");
-    if ($namaFile) {
+    if ($namaFile != "") {
 
       $namaFile = str_replace("%20", " ", $namaFile);
       $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader('Xlsx');
@@ -316,11 +316,13 @@ class Admin extends CI_Controller
         }
       }
 
-      if ($this->AdminModel->addSiswaImport($siswa)[0]) {
+      $import = $this->AdminModel->addSiswaImport($siswa);
+
+      if ($import[0]) {
 
         $data = [
           "content" => 'admin/pages/importSiswa',
-          "siswa" => $this->AdminModel->addSiswaImport($siswa)[1],
+          "siswa" => $import[1],
           "jsFiles" => ["datatables.min.js"],
           "cssFiles" => ["datatables.min.css"]
         ];
