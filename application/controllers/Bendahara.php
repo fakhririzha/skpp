@@ -353,6 +353,30 @@ class Bendahara extends CI_Controller
     $pemasukanLainnya = $this->BendaharaModel->getPemasukanLainnya($tanggalAsli, $sebulan);
     $laporanSPP = $this->BendaharaModel->getLaporanSPP($tanggalAsli, $sebulan);
 
+    $data = [
+      "pemasukanLainnya" => $pemasukanLainnya,
+      "laporanSPP" => $laporanSPP,
+      "tanggal" => $tanggal,
+      "bulan" => Carbon::parse($tanggal)->locale("id_ID")->monthName,
+      "tahun" => Carbon::createFromFormat("Y-m-d H:i:s", $tanggal)->format("Y"),
+      "awal" => (int) Carbon::parse($tanggalAsli)->format("d"),
+      "akhir" => (int) Carbon::parse($sebulan)->format("d"),
+      "cssFiles" => ["laporan.css", "print.min.css"],
+      "jsFiles" => ["print.min.js"]
+    ];
+
+    $this->load->view("bendahara/pages/laporanSPP_export", $data);
+  }
+  public function generateLaporanSPP_old($filterRentang)
+  {
+    $tanggal = Carbon::createFromFormat("Y-m-d", $filterRentang);
+    $tanggalAsli = $tanggal->format("Y-m-d");
+    $sebulan = Carbon::createFromFormat("Y-m-d H:i:s", $tanggal->addMonth(1)->subDay(1))->format("Y-m-d");
+    $tanggal = $tanggal->subDay(1);
+
+    $pemasukanLainnya = $this->BendaharaModel->getPemasukanLainnya($tanggalAsli, $sebulan);
+    $laporanSPP = $this->BendaharaModel->getLaporanSPP($tanggalAsli, $sebulan);
+
     $xls = new Spreadsheet();
 
     // SET PROPERTIES
