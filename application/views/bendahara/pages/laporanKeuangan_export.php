@@ -42,7 +42,7 @@
     <div class="row">
       <div class="col-md-12 text-center">
         <div class="heading">
-          <p>LAPORAN KEUANGAN PENERIMAAN SPP SANTRI/WATI</p>
+          <p>LAPORAN KEUANGAN PESANTREN MAWARIDUSSALAM</p>
           <p>BULAN : <?= $bulan . ' ' . $tahun ?></p>
           <br>
         </div>
@@ -51,22 +51,30 @@
             <th style="width: 1%" class="text-center">NO.</th>
             <th style="width: 5%" class="text-center">TANGGAL</th>
             <th style="width: 5%" class="text-center">HARI</th>
-            <th style="width: 15%" class="text-center">PENERIMAAN PUTRA</th>
-            <th style="width: 15%" class="text-center">PENERIMAAN PUTRI</th>
-            <th style="width: 10%" class="text-center">JUMLAH</th>
+            <th style="width: 15%" class="text-center">DEBIT</th>
+            <th style="width: 15%" class="text-center">KREDIT</th>
+            <th style="width: 10%" class="text-center">SALDO</th>
           </thead>
           <tbody>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td class="text-right"><?= "Rp. " . number_format($saldoAwal, 0, ',', '.') ?></td>
+            </tr>
             <?php
-            $saldo = 0;
-            $pa = 0;
-            $pi = 0;
+            $saldo = $saldoAwal;
+            $totalDebit = 0;
+            $totalKredit = 0;
             ?>
             <?php for ($i = $awal; $i <= $akhir; $i++) : ?>
               <tr>
                 <?php
 
-                $paFound = false;
-                $piFound = false;
+                $debitFound = false;
+                $kreditFound = false;
 
                 $hari = ($i > 9) ? $i : "0" . $i;
                 $carbon = new \Carbon\Carbon();
@@ -74,9 +82,9 @@
                 $tgl = $hari . '/' . $bulan . '/' . $tahun;
 
                 ?>
-                <td><?= $i ?></td>
-                <td><?= $tgl ?></td>
-                <td class="text-uppercase">
+                <td class="text-center"><?= $i ?></td>
+                <td class="text-center"><?= $tgl ?></td>
+                <td class="text-uppercase text-center">
                   <?php
 
                   $carbon = new \Carbon\Carbon();
@@ -88,18 +96,18 @@
                 <td class="text-right">
                   <?php
 
-                  $putra = 0;
+                  $debit = 0;
 
-                  foreach ($laporanSPP as $data) {
+                  foreach ($laporanKeuangan as $data) {
                     if ($data->tanggalFormatted == $tgl) {
-                      echo "Rp. " . number_format($data->jlhPutra, 0, ',', '.');
-                      $putra = $data->jlhPutra;
-                      $pa += $putra;
-                      $paFound = true;
+                      echo "Rp. " . number_format($data->jlhDebit, 0, ',', '.');
+                      $debit = $data->jlhDebit;
+                      $totalDebit += $debit;
+                      $debitFound = true;
                       break;
                     }
                   }
-                  if ($paFound == false) {
+                  if ($debitFound == false) {
                     echo "Rp. 0";
                   }
                   ?>
@@ -107,18 +115,18 @@
                 <td class="text-right">
                   <?php
 
-                  $putri = 0;
+                  $kredit = 0;
 
-                  foreach ($laporanSPP as $data) {
+                  foreach ($laporanKeuangan as $data) {
                     if ($data->tanggalFormatted == $tgl) {
-                      echo "Rp. " . number_format($data->jlhPutri, 0, ',', '.');
-                      $putri = $data->jlhPutri;
-                      $pi += $putri;
-                      $piFound = true;
+                      echo "Rp. " . number_format($data->jlhKredit, 0, ',', '.');
+                      $kredit = $data->jlhKredit;
+                      $totalKredit += $kredit;
+                      $kreditFound = true;
                       break;
                     }
                   }
-                  if ($piFound == false) {
+                  if ($kreditFound == false) {
                     echo "Rp. 0";
                   }
                   ?>
@@ -126,27 +134,30 @@
                 <td class="text-right">
                   <?php
 
-                  echo "Rp. " . number_format(($putra + $putri), 0, ',', '.');
-                  $saldo += ($putra + $putri);
+                  $saldo += ($debit - $kredit);
+                  echo "Rp. " . number_format($saldo, 0, ',', '.');
 
                   ?>
                 </td>
               </tr>
             <?php endfor; ?>
             <tr>
-              <td><?= $i ?></td>
-              <td>LAIN-LAIN</td>
-              <td></td>
-              <td></td>
+              <td class="text-center"><?= $i ?></td>
+              <td class="text-center">LAIN-LAIN</td>
               <td></td>
               <td class="text-right">
                 <?= "Rp. " . number_format($pemasukanLainnya->pemasukanLainnya, 0, ',', '.') ?>
+                <?php $totalDebit += $pemasukanLainnya->pemasukanLainnya ?>
+              </td>
+              <td></td>
+              <td class="text-right">
+                <?= "Rp. " . number_format(($saldo + $pemasukanLainnya->pemasukanLainnya), 0, ',', '.') ?>
               </td>
             </tr>
             <tr>
-              <td colspan=3 class="text-center">TOTAL PENERIMAAN</td>
-              <td class="text-right"><?= "Rp. " . number_format($pa, 0, ',', '.') ?></td>
-              <td class="text-right"><?= "Rp. " . number_format($pi, 0, ',', '.') ?></td>
+              <td colspan=3 class="text-center">TOTAL KESELURUHAN</td>
+              <td class="text-right"><?= "Rp. " . number_format($totalDebit, 0, ',', '.') ?></td>
+              <td class="text-right"><?= "Rp. " . number_format($totalKredit, 0, ',', '.') ?></td>
               <td class="text-right">
                 <?= "Rp. " . number_format(($saldo + $pemasukanLainnya->pemasukanLainnya), 0, ',', '.') ?>
               </td>
