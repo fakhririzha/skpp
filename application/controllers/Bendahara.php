@@ -804,7 +804,69 @@ class Bendahara extends CI_Controller
     $writer->save('php://output');
     exit;
   }
-  public function generateLaporanDetail($filterRentang)
+  public function generateLaporanDetail($filterRentang = '2019-07-01')
+  {
+    $tanggal = Carbon::createFromFormat("Y-m-d", $filterRentang);
+    $tanggalAsli = $tanggal->format("Y-m-d");
+    $sebulan = Carbon::createFromFormat("Y-m-d H:i:s", $tanggal->addMonth(1)->subDay(1))->format("Y-m-d");
+    $tanggal->subDay(1);
+
+    $pemasukan = $this->BendaharaModel->getPemasukan($tanggal->format("Y-m-d"))->pemasukan;
+    $pengeluaran = $this->BendaharaModel->getPengeluaran($tanggal->format("Y-m-d"))->pengeluaran;
+
+    $saldoAwal = $pemasukan - $pengeluaran;
+
+    $start = $tanggal->subMonth(1)->addDay(1)->format("d");
+    $end = $tanggal->addMonth(1)->subDay(1)->format("d");
+    $startBln = $tanggal->format("m");
+    $startThn = (int) $tanggal->format("Y");
+
+    $laporanPengeluaran = [];
+    $laporanPenerimaan = [];
+    $laporanSPPPutra = [];
+    $laporanSPPPutri = [];
+
+    array_push($laporanPengeluaran, "");
+    array_push($laporanPenerimaan, "");
+    array_push($laporanSPPPutra, "");
+    array_push($laporanSPPPutri, "");
+
+    for ($i = (int) $start; $i <= (int) $end; $i++) {
+      $hari = ($i < 10) ? "0" . $i : $i;
+      $tgl = $hari . '/' . $startBln . '/' . $startThn;
+      array_push($laporanPengeluaran, $tgl);
+      array_push($laporanPenerimaan, $tgl);
+      array_push($laporanSPPPutra, $tgl);
+      array_push($laporanSPPPutri, $tgl);
+    }
+
+    if ($saldoAwal < 1) {
+      $saldoAwal = 0;
+    }
+
+    // $start = $tanggal->subMonth(1)->addDay(1)->format("d");
+    // $end = $tanggal->addMonth(1)->subDay(1)->format("d");
+    // $startBln = $tanggal->format("m");
+    // $startThn = (int) $tanggal->format("Y");
+
+    $data = [
+      "pemasukan" => $pemasukan,
+      "pengeluaran" => $pengeluaran,
+      "saldoAwal" => $saldoAwal,
+      "tanggal" => $tanggal,
+      "tahun" => Carbon::createFromFormat("Y-m-d H:i:s", $tanggal)->format("Y"),
+      "bulan" => Carbon::parse($tanggal)->locale("id_ID")->monthName,
+      "awal" => (int) Carbon::parse($tanggalAsli)->format("d"),
+      "akhir" => (int) Carbon::parse($sebulan)->format("d"),
+      "cssFiles" => ["laporan.css", "print.min.css"],
+      "jsFiles" => ["print.min.js"]
+    ];
+
+    var_dump([$pemasukan, $pengeluaran, $saldoAwal, $laporanPenerimaan, $laporanPengeluaran, $laporanSPPPutra, $laporanSPPPutri]);
+
+    $this->load->view("bendahara/pages/laporanDetail_export", $data);
+  }
+  public function generateLaporanDetail_old($filterRentang)
   {
     $tanggal = Carbon::createFromFormat("Y-m-d", $filterRentang);
     $tanggalAsli = $tanggal->format("Y-m-d");
