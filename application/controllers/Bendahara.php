@@ -683,7 +683,30 @@ class Bendahara extends CI_Controller
     $writer->save('php://output');
     exit;
   }
-  public function generateLaporanPengeluaran($filterRentang)
+  public function generateLaporanPengeluaran($filterRentang = '2019-07-01')
+  {
+    $tanggal = Carbon::createFromFormat("Y-m-d", $filterRentang);
+    $tanggalAsli = $tanggal->format("Y-m-d");
+    $sebulan = Carbon::createFromFormat("Y-m-d H:i:s", $tanggal->addMonth(1)->subDay(1))->format("Y-m-d");
+    $tanggal = $tanggal->subDay(1);
+
+    $laporanPengeluaran = $this->BendaharaModel->getLaporanPengeluaran($tanggalAsli, $sebulan);
+
+
+    $data = [
+      "laporanPengeluaran" => $laporanPengeluaran,
+      "tanggal" => $tanggal,
+      "tahun" => Carbon::createFromFormat("Y-m-d H:i:s", $tanggal)->format("Y"),
+      "bulan" => Carbon::parse($tanggal)->locale("id_ID")->monthName,
+      "awal" => (int) Carbon::parse($tanggalAsli)->format("d"),
+      "akhir" => (int) Carbon::parse($sebulan)->format("d"),
+      "cssFiles" => ["laporan.css", "print.min.css"],
+      "jsFiles" => ["print.min.js"]
+    ];
+
+    $this->load->view("bendahara/pages/laporanPengeluaran_export", $data);
+  }
+  public function generateLaporanPengeluaran_old($filterRentang)
   {
     $tanggal = Carbon::createFromFormat("Y-m-d", $filterRentang);
     $tanggalAsli = $tanggal->format("Y-m-d");
