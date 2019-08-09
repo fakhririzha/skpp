@@ -525,8 +525,11 @@ class Bendahara extends CI_Controller
     $sebulan = Carbon::createFromFormat("Y-m-d H:i:s", $tanggal->addMonth(1)->subDay(1))->format("Y-m-d");
     $tanggal = $tanggal->subDay(1);
 
-    $pemasukan = $this->BendaharaModel->getPemasukan($tanggal->format("Y-m-d"))->pemasukan;
-    $pengeluaran = $this->BendaharaModel->getPengeluaran($tanggal->format("Y-m-d"))->pengeluaran;
+    $sebulanSebelum = Carbon::parse($tanggal)->format("Y-m-d");
+    $sebulanSebelum = Carbon::createFromFormat("Y-m-d", $sebulanSebelum)->subMonth(1)->lastOfMonth();
+
+    $pemasukan = $this->BendaharaModel->getPemasukan($sebulanSebelum->format("Y-m-d"))->pemasukan;
+    $pengeluaran = $this->BendaharaModel->getPengeluaran($sebulanSebelum->format("Y-m-d"))->pengeluaran;
 
     $saldoAwal = $pemasukan - $pengeluaran;
     $laporanKeuangan = $this->BendaharaModel->getLaporanKeuangan($tanggalAsli, $sebulan);
@@ -809,50 +812,52 @@ class Bendahara extends CI_Controller
     $tanggal = Carbon::createFromFormat("Y-m-d", $filterRentang);
     $tanggalAsli = $tanggal->format("Y-m-d");
     $sebulan = Carbon::createFromFormat("Y-m-d H:i:s", $tanggal->addMonth(1)->subDay(1))->format("Y-m-d");
-    $tanggal->subDay(1);
+    $tanggal->subMonth(1);
 
-    $pemasukan = $this->BendaharaModel->getPemasukan($tanggal->format("Y-m-d"))->pemasukan;
-    $pengeluaran = $this->BendaharaModel->getPengeluaran($tanggal->format("Y-m-d"))->pengeluaran;
+    $sebulanSebelum = Carbon::parse($tanggal)->format("Y-m-d");
+    $sebulanSebelum = Carbon::createFromFormat("Y-m-d", $sebulanSebelum)->subMonth(1)->lastOfMonth();
+
+    $pemasukan = $this->BendaharaModel->getPemasukan($sebulanSebelum->format("Y-m-d"))->pemasukan;
+    $pengeluaran = $this->BendaharaModel->getPengeluaran($sebulanSebelum->format("Y-m-d"))->pengeluaran;
 
     $saldoAwal = $pemasukan - $pengeluaran;
 
-    $start = $tanggal->subMonth(1)->addDay(1)->format("d");
-    $end = $tanggal->addMonth(1)->subDay(1)->format("d");
+    $start = $sebulanSebelum->addDay(1)->format("d");
+    $end = $sebulanSebelum->lastOfMonth()->format("d");
     $startBln = $tanggal->format("m");
     $startThn = (int) $tanggal->format("Y");
 
     $laporanPengeluaran = [];
-    $laporanPenerimaan = [];
-    $laporanSPPPutra = [];
-    $laporanSPPPutri = [];
+    $laporanPemasukanLainnya = [];
+    $laporanSPP = [];
 
     array_push($laporanPengeluaran, "");
-    array_push($laporanPenerimaan, "");
-    array_push($laporanSPPPutra, "");
-    array_push($laporanSPPPutri, "");
+    array_push($laporanPemasukanLainnya, "");
+    array_push($laporanSPP, "");
 
     for ($i = (int) $start; $i <= (int) $end; $i++) {
       $hari = ($i < 10) ? "0" . $i : $i;
       $tgl = $hari . '/' . $startBln . '/' . $startThn;
-      array_push($laporanPengeluaran, $tgl);
-      array_push($laporanPenerimaan, $tgl);
-      array_push($laporanSPPPutra, $tgl);
-      array_push($laporanSPPPutri, $tgl);
+
+      $luar = $this->BendaharaModel->getLaporanPengeluaranDetail($startThn . '-' . $startBln . '-' . $hari);
+      array_push($laporanPengeluaran, ["tanggal" => $tgl, "laporanPengeluaran" => $luar]);
+
+      $masukLain = $this->BendaharaModel->getPemasukanLainnyaDetail($startThn . '-' . $startBln . '-' . $hari);
+      array_push($laporanPemasukanLainnya, ["tanggal" => $tgl, "laporanPemasukanLainnya" => $masukLain]);
+
+      $masukSPP = $this->BendaharaModel->getPenerimaanSPPDetail($startThn . '-' . $startBln . '-' . $hari);
+      array_push($laporanSPP, ["tanggal" => $tgl, "laporanSPP" => $masukSPP]);
     }
 
     if ($saldoAwal < 1) {
       $saldoAwal = 0;
     }
 
-    // $start = $tanggal->subMonth(1)->addDay(1)->format("d");
-    // $end = $tanggal->addMonth(1)->subDay(1)->format("d");
-    // $startBln = $tanggal->format("m");
-    // $startThn = (int) $tanggal->format("Y");
-
     $data = [
-      "pemasukan" => $pemasukan,
-      "pengeluaran" => $pengeluaran,
       "saldoAwal" => $saldoAwal,
+      "laporanPengeluaran" => $laporanPengeluaran,
+      "laporanPemasukanLainnya" => $laporanPemasukanLainnya,
+      "laporanSPP" => $laporanSPP,
       "tanggal" => $tanggal,
       "tahun" => Carbon::createFromFormat("Y-m-d H:i:s", $tanggal)->format("Y"),
       "bulan" => Carbon::parse($tanggal)->locale("id_ID")->monthName,
@@ -862,7 +867,8 @@ class Bendahara extends CI_Controller
       "jsFiles" => ["print.min.js"]
     ];
 
-    var_dump([$pemasukan, $pengeluaran, $saldoAwal, $laporanPenerimaan, $laporanPengeluaran, $laporanSPPPutra, $laporanSPPPutri]);
+    // var_dump([$start, $end, $pemasukan, $pengeluaran, $saldoAwal, $laporanPengeluaran, $laporanPemasukanLainnya, $laporanSPP]);
+    // var_dump($laporanPengeluaran);
 
     $this->load->view("bendahara/pages/laporanDetail_export", $data);
   }

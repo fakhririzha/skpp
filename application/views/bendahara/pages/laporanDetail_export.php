@@ -48,11 +48,7 @@
           <thead>
             <tr>
               <th></th>
-              <th></th>
-              <th>BULAN : <?= $bulan . '' . $tahun ?></th>
-              <th></th>
-              <th></th>
-              <th></th>
+              <th colspan="5">BULAN : <?= $bulan . ' ' . $tahun ?></th>
             </tr>
             <tr>
               <th style="width: 1%" class="text-center">TANGGAL</th>
@@ -72,59 +68,86 @@
               <td></td>
               <td><?= "Rp. " . number_format($saldoAwal, 0, ',', '.') ?></td>
             </tr>
-            <?php
-            $totalPengeluaran = 0;
-            ?>
             <?php for ($i = $awal; $i <= $akhir; $i++) : ?>
+              <?php foreach ($laporanPengeluaran[$i]["laporanPengeluaran"] as $data) : ?>
+                <tr>
+                  <td class="text-center">
+                    <?php
+
+                    $carbon = new \Carbon\Carbon();
+                    echo substr($laporanPengeluaran[$i]["tanggal"], 0, 2);
+                    // var_dump($data);
+
+                    ?>
+                  </td>
+                  <td class="text-center"><?= $data->kode ?></td>
+                  <td><?= $data->keterangan ?></td>
+                  <td class="text-right"></td>
+                  <td class="text-right"><?= "Rp. " . number_format($data->nominal, 0, ',', '.') ?></td>
+                  <td></td>
+                </tr>
+              <?php endforeach; ?>
+              <?php foreach ($laporanPemasukanLainnya[$i]["laporanPemasukanLainnya"] as $data) : ?>
+                <tr>
+                  <td class="text-center">
+                    <?php
+
+                    $carbon = new \Carbon\Carbon();
+                    echo substr($laporanPemasukanLainnya[$i]["tanggal"], 0, 2);
+                    // var_dump($data);
+
+                    ?>
+                  </td>
+                  <td class="text-center"><?= $data->kode ?></td>
+                  <td><?= $data->keterangan ?></td>
+                  <td class="text-right"></td>
+                  <td class="text-right"><?= "Rp. " . number_format($data->nominal, 0, ',', '.') ?></td>
+                  <td></td>
+                </tr>
+              <?php endforeach; ?>
+              <?php foreach ($laporanSPP[$i]["laporanSPP"] as $data) : ?>
+                <tr>
+                  <td class="text-center">
+                    <?php
+
+                    $carbon = new \Carbon\Carbon();
+                    echo substr($laporanSPP[$i]["tanggal"], 0, 2);
+                    // var_dump($data);
+
+                    ?>
+                  </td>
+                  <td class="text-center">1A</td>
+                  <td class="text-left">Penerimaan Putra</td>
+                  <td class="text-right"><?= "Rp. " . number_format($data->penerimaanPutra, 0, ',', '.') ?></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td class="text-center">
+                    <?php
+
+                    $carbon = new \Carbon\Carbon();
+                    echo substr($laporanSPP[$i]["tanggal"], 0, 2);
+                    // var_dump($data);
+
+                    ?>
+                  </td>
+                  <td class="text-center">2A</td>
+                  <td class="text-left">Penerimaan Putri</td>
+                  <td class="text-right"><?= "Rp. " . number_format($data->penerimaanPutri, 0, ',', '.') ?></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              <?php endforeach; ?>
               <tr>
-                <?php
-
-                $pengeluaranFound = false;
-
-                $hari = ($i > 9) ? $i : "0" . $i;
-                $carbon = new \Carbon\Carbon();
-                $bulan = $carbon::parse($tanggal)->format("m");
-                $tgl = $hari . '/' . $bulan . '/' . $tahun;
-
-                ?>
-                <td class="text-center"><?= $i ?></td>
-                <td class="text-center"><?= $tgl ?></td>
-                <td class="text-uppercase text-center">
-                  <?php
-
-                  $carbon = new \Carbon\Carbon();
-                  $hari = $carbon::createFromFormat("d/m/Y", $tgl)->locale("id_ID")->dayName;
-                  echo $hari;
-
-                  ?>
-                </td>
-                <td class="text-center">
-                  <?php
-
-                  $pengeluaran = 0;
-
-                  foreach ($laporanPengeluaran as $data) {
-                    if ($data->tanggalFormatted == $tgl) {
-                      echo "Rp. " . number_format($data->pengeluaran, 0, ',', '.');
-                      $pengeluaran = $data->pengeluaran;
-                      $totalPengeluaran += $pengeluaran;
-                      $pengeluaranFound = true;
-                      break;
-                    }
-                  }
-                  if ($pengeluaranFound == false) {
-                    echo "Rp. 0";
-                  }
-                  ?>
-                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
               </tr>
             <?php endfor; ?>
-            <tr>
-              <td colspan=3 class="text-center">TOTAL KESELURUHAN</td>
-              <td class="text-center">
-                <?= "Rp. " . number_format($totalPengeluaran, 0, ',', '.') ?>
-              </td>
-            </tr>
           </tbody>
         </table>
       </div>
