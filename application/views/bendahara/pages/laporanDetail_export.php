@@ -66,9 +66,16 @@
               <td></td>
               <td></td>
               <td></td>
-              <td><?= "Rp. " . number_format($saldoAwal, 0, ',', '.') ?></td>
+              <td class="text-right"><?= "Rp. " . number_format($saldoAwal, 0, ',', '.') ?></td>
             </tr>
+            <?php
+            $saldoSkrg = $saldoAwal;
+            ?>
             <?php for ($i = $awal; $i <= $akhir; $i++) : ?>
+              <?php
+              $totalPemasukan = 0;
+              $totalPengeluaran = 0;
+              ?>
               <?php foreach ($laporanPengeluaran[$i]["laporanPengeluaran"] as $data) : ?>
                 <tr>
                   <td class="text-center">
@@ -84,6 +91,7 @@
                   <td><?= $data->keterangan ?></td>
                   <td class="text-right"></td>
                   <td class="text-right"><?= "Rp. " . number_format($data->nominal, 0, ',', '.') ?></td>
+                  <?php $totalPengeluaran += $data->nominal ?>
                   <td></td>
                 </tr>
               <?php endforeach; ?>
@@ -100,8 +108,9 @@
                   </td>
                   <td class="text-center"><?= $data->kode ?></td>
                   <td><?= $data->keterangan ?></td>
-                  <td class="text-right"></td>
                   <td class="text-right"><?= "Rp. " . number_format($data->nominal, 0, ',', '.') ?></td>
+                  <td class="text-right"></td>
+                  <?php $totalPemasukan += $data->nominal ?>
                   <td></td>
                 </tr>
               <?php endforeach; ?>
@@ -119,6 +128,7 @@
                   <td class="text-center">1A</td>
                   <td class="text-left">Penerimaan Putra</td>
                   <td class="text-right"><?= "Rp. " . number_format($data->penerimaanPutra, 0, ',', '.') ?></td>
+                  <?php $totalPemasukan += $data->penerimaanPutra ?>
                   <td></td>
                   <td></td>
                 </tr>
@@ -135,18 +145,40 @@
                   <td class="text-center">2A</td>
                   <td class="text-left">Penerimaan Putri</td>
                   <td class="text-right"><?= "Rp. " . number_format($data->penerimaanPutri, 0, ',', '.') ?></td>
+                  <?php $totalPemasukan += $data->penerimaanPutri ?>
                   <td></td>
                   <td></td>
                 </tr>
               <?php endforeach; ?>
-              <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
+              <?php if (count($laporanPengeluaran[$i]["laporanPengeluaran"]) > 0 || count($laporanPemasukanLainnya[$i]["laporanPemasukanLainnya"]) > 0 || count($laporanSPP[$i]["laporanSPP"]) > 0) : ?>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td class="text-right" style="font-weight: 700;">
+                    <?= "Rp. " . number_format($totalPemasukan, 0, ',', '.') ?>
+                  </td>
+                  <td class="text-right" style="font-weight: 700;">
+                    <?= "Rp. " . number_format($totalPengeluaran, 0, ',', '.') ?>
+                  </td>
+                  <td class="text-right" style="font-weight: 700;">
+                    <?php
+
+                    $saldoSkrg = $saldoSkrg + ($totalPemasukan - $totalPengeluaran);
+                    echo "Rp. " . number_format($saldoSkrg, 0, ',', '.');
+
+                    ?>
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              <?php endif; ?>
             <?php endfor; ?>
           </tbody>
         </table>
