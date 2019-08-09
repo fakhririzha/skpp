@@ -552,140 +552,6 @@ class Bendahara extends CI_Controller
 
     $this->load->view("bendahara/pages/laporanKeuangan_export", $data);
   }
-  public function generateLaporanKeuangan_old($filterRentang)
-  {
-    $tanggal = Carbon::createFromFormat("Y-m-d", $filterRentang);
-    $tanggalAsli = $tanggal->format("Y-m-d");
-    $sebulan = Carbon::createFromFormat("Y-m-d H:i:s", $tanggal->addMonth(1)->subDay(1))->format("Y-m-d");
-    $tanggal = $tanggal->subDay(1);
-
-    $pemasukan = $this->BendaharaModel->getPemasukan($tanggal->format("Y-m-d"))->pemasukan;
-    $pengeluaran = $this->BendaharaModel->getPengeluaran($tanggal->format("Y-m-d"))->pengeluaran;
-
-    $saldoAwal = $pemasukan - $pengeluaran;
-    $laporanKeuangan = $this->BendaharaModel->getLaporanKeuangan($tanggalAsli, $sebulan);
-    $pemasukanLainnya = $this->BendaharaModel->getPemasukanLainnya($tanggalAsli, $sebulan);
-
-    $xls = new Spreadsheet();
-
-    $xls->getProperties()
-      ->setCreator('Ponpes Mawaridussalam')
-      ->setLastModifiedBy($this->session->username)
-      ->setTitle('Laporan Keuangan Bulanan')
-      ->setSubject('Laporan Keuangan Bulanan');
-
-    // SET DATA DI DOKUMEN
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A1', 'NO.')
-      ->setCellValue('B1', 'TANGGAL')
-      ->setCellValue('C1', 'HARI')
-      ->setCellValue('D1', 'DEBET')
-      ->setCellValue('E1', 'KREDIT')
-      ->setCellValue('F1', 'SALDO');
-
-    $i = 2;
-    $num = 1;
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A' . $i, '')
-      ->setCellValue('B' . $i, '')
-      ->setCellValue('C' . $i, '')
-      ->setCellValue('D' . $i, '')
-      ->setCellValue('E' . $i, '')
-      ->setCellValue('F' . $i, $saldoAwal);
-    $i++;
-
-    $saldo = $saldoAwal;
-
-    foreach ($laporanKeuangan as $data) {
-      $hari = Carbon::parse($data->tanggal);
-      $hari = $hari->locale('id_ID')->dayName;
-      $tanggal = DateTime::createFromFormat("Y-m-d", $data->tanggal)->format("d/m/Y");
-
-      $saldo = $saldo + ($data->jlhDebit - $data->jlhKredit);
-
-      $xls->setActiveSheetIndex(0)
-        ->setCellValue('A' . $i, $num)
-        ->setCellValue('B' . $i, $tanggal)
-        ->setCellValue('C' . $i, strtoupper($hari))
-        ->setCellValue('D' . $i, $data->jlhDebit)
-        ->setCellValue('E' . $i, $data->jlhKredit)
-        ->setCellValue('F' . $i, $saldo);
-      $i++;
-      $num++;
-    }
-    $lainnya = $pemasukanLainnya->pemasukanLainnya;
-    if ($pemasukanLainnya->pemasukanLainnya == "") {
-      $lainnya = 0;
-    }
-    $saldoSkrg = $lainnya + $saldo;
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A' . $i, $num)
-      ->setCellValue('B' . $i, 'LAIN-LAIN')
-      ->setCellValue('C' . $i, '')
-      ->setCellValue('D' . $i, $lainnya)
-      ->setCellValue('E' . $i, '')
-      ->setCellValue('F' . $i, $saldoSkrg);
-    // ->setCellValue('F' . $i, '=SUM(F2:F' . ($i - 1) . ')');
-    $i++;
-
-    $xls->setActiveSheetIndex(0)
-      ->mergeCells('A' . $i . ':C' . $i)
-      ->setCellValue('A' . $i, 'TOTAL KESELURUHAN')
-      ->setCellValue('D' . $i, '=SUM(D2:D' . ($i - 1) . ')')
-      ->setCellValue('E' . $i, '=SUM(E2:E' . ($i - 1) . ')')
-      ->setCellValue(
-        'F' . $i,
-        $saldoSkrg
-      );
-
-    $xls->getActiveSheet()
-      ->getStyle('A1:F1')
-      ->getAlignment('A1:F1')
-      ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
-      ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-    $xls->getActiveSheet()
-      ->getStyle('A2:C' . ($i - 1))
-      ->getAlignment('A2:C' . ($i - 1))
-      ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
-      ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-
-    $xls->getActiveSheet()->getStyle('D3:F' . $i)
-      ->getNumberFormat()
-      ->setFormatCode('Rp#,##0');
-    $xls->getActiveSheet(0)->getStyle('F2')
-      ->getNumberFormat()
-      ->setFormatCode('_("Rp"* #,##0_);_("Rp"* \(#,##0\);_("Rp"* "-"??_);_(@_)');
-
-    foreach (range('A', 'F') as $columnID) {
-      $xls->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(TRUE);
-    }
-
-    $styleArray = [
-      'borders' => [
-        'allBorders' => [
-          'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
-          'color' => ['rgb' => '000000'],
-        ],
-      ],
-    ];
-    $xls->getActiveSheet()->getStyle('A1:F' . $i)->applyFromArray($styleArray);
-
-    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    header('Content-Disposition: attachment;filename="Laporan Keuangan.xlsx"');
-    header('Cache-Control: max-age=0');
-    // If you're serving to IE 9, then the following may be needed
-    header('Cache-Control: max-age=1');
-
-    // If you're serving to IE over SSL, then the following may be needed
-    header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-    header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
-    header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
-    header('Pragma: public'); // HTTP/1.0
-
-    $writer = IOFactory::createWriter($xls, 'Xlsx');
-    $writer->save('php://output');
-    exit;
-  }
   public function generateLaporanPengeluaran($filterRentang = '2019-07-01')
   {
     $tanggal = Carbon::createFromFormat("Y-m-d", $filterRentang);
@@ -708,104 +574,6 @@ class Bendahara extends CI_Controller
     ];
 
     $this->load->view("bendahara/pages/laporanPengeluaran_export", $data);
-  }
-  public function generateLaporanPengeluaran_old($filterRentang)
-  {
-    $tanggal = Carbon::createFromFormat("Y-m-d", $filterRentang);
-    $tanggalAsli = $tanggal->format("Y-m-d");
-    $sebulan = Carbon::createFromFormat("Y-m-d H:i:s", $tanggal->addMonth(1)->subDay(1))->format("Y-m-d");
-    $tanggal = $tanggal->subDay(1);
-
-    $laporanPengeluaran = $this->BendaharaModel->getLaporanPengeluaran($tanggalAsli, $sebulan);
-
-    $xls = new Spreadsheet();
-
-    // $drawing = new Drawing();
-    // $drawing->setName('Logo');
-    // $drawing->setDescription('Logo');
-    // $drawing->setPath('captcha/1564542478.9699.jpg'); // put your path and image here
-    // $drawing->setCoordinates('A1');
-    // $drawing->setWorksheet($xls->getActiveSheet());
-
-    $xls->getProperties()
-      ->setCreator('Ponpes Mawaridussalam')
-      ->setLastModifiedBy($this->session->username)
-      ->setTitle('Laporan Pengeluaran')
-      ->setSubject('Laporan Pengeluaran');
-
-    // SET DATA DI DOKUMEN
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A1', 'NO.')
-      ->setCellValue('B1', 'TANGGAL')
-      ->setCellValue('C1', 'HARI')
-      ->setCellValue('D1', 'PENGELUARAN');
-
-    $i = 2;
-    $num = 1;
-
-    foreach ($laporanPengeluaran as $data) {
-      $hari = Carbon::parse($data->tanggal);
-      $hari = $hari->locale('id_ID')->dayName;
-      $tanggal = DateTime::createFromFormat("Y-m-d", $data->tanggal)->format("d/m/Y");
-
-      $xls->setActiveSheetIndex(0)
-        ->setCellValue('A' . $i, $num)
-        ->setCellValue('B' . $i, $tanggal)
-        ->setCellValue('C' . $i, strtoupper($hari))
-        ->setCellValue('D' . $i, $data->pengeluaran);
-      $i++;
-      $num++;
-    }
-
-    $xls->setActiveSheetIndex(0)
-      ->mergeCells('A' . $i . ':C' . $i)
-      ->setCellValue('A' . $i, 'TOTAL KESELURUHAN')
-      ->setCellValue('D' . $i, '=SUM(D2:D' . ($i - 1) . ')');
-
-    $xls->getActiveSheet()
-      ->getStyle('A1:D1')
-      ->getAlignment('A1:D1')
-      ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
-      ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-    $xls->getActiveSheet()
-      ->getStyle('A2:C' . ($i - 1))
-      ->getAlignment('A2:C' . ($i - 1))
-      ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
-      ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-
-    $xls->getActiveSheet()->getStyle('D2:D' . $i)
-      ->getNumberFormat()
-      ->setFormatCode('_("Rp"* #,##0_);_("Rp"* \(#,##0\);_("Rp"* "-"??_);_(@_)');
-
-    foreach (range('A', 'D') as $columnID) {
-      $xls->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(TRUE);
-    }
-
-    $styleArray = [
-      'borders' => [
-        'allBorders' => [
-          'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
-          'color' => ['rgb' => '000000'],
-        ],
-      ],
-    ];
-    $xls->getActiveSheet()->getStyle('A1:D' . $i)->applyFromArray($styleArray);
-
-    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    header('Content-Disposition: attachment;filename="Laporan Pengeluaran.xlsx"');
-    header('Cache-Control: max-age=0');
-    // If you're serving to IE 9, then the following may be needed
-    header('Cache-Control: max-age=1');
-
-    // If you're serving to IE over SSL, then the following may be needed
-    header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-    header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
-    header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
-    header('Pragma: public'); // HTTP/1.0
-
-    $writer = IOFactory::createWriter($xls, 'Xlsx');
-    $writer->save('php://output');
-    exit;
   }
   public function generateLaporanDetail($filterRentang = '2019-07-01')
   {
@@ -872,207 +640,64 @@ class Bendahara extends CI_Controller
 
     $this->load->view("bendahara/pages/laporanDetail_export", $data);
   }
-  public function generateLaporanDetail_old($filterRentang)
+  public function generateLaporanKategori($filterRentang = '2019-07-01')
   {
     $tanggal = Carbon::createFromFormat("Y-m-d", $filterRentang);
     $tanggalAsli = $tanggal->format("Y-m-d");
     $sebulan = Carbon::createFromFormat("Y-m-d H:i:s", $tanggal->addMonth(1)->subDay(1))->format("Y-m-d");
-    $tanggal->subDay(1);
+    $tanggal = $tanggal->subDay(1);
 
     $pemasukan = $this->BendaharaModel->getPemasukan($tanggal->format("Y-m-d"))->pemasukan;
     $pengeluaran = $this->BendaharaModel->getPengeluaran($tanggal->format("Y-m-d"))->pengeluaran;
 
     $saldoAwal = $pemasukan - $pengeluaran;
 
-    $start = $tanggal->subMonth(1)->addDay(1)->format("d");
-    $end = $tanggal->addMonth(1)->subDay(1)->format("d");
-    $startBln = $tanggal->format("m");
     $startThn = (int) $tanggal->format("Y");
 
-    // echo Carbon::parse($tanggal)->locale('id_ID')->getTranslatedMonthName();
-    // die;
+    // PENERIMAAN
+    $penerimaanPutra = $this->BendaharaModel->getPenerimaanPutra($tanggalAsli, $sebulan);
+    $penerimaanPutri = $this->BendaharaModel->getPenerimaanPutri($tanggalAsli, $sebulan);
+    $pemasukanLainnya = $this->BendaharaModel->getPemasukanLainnya($tanggalAsli, $sebulan);
 
-    $xls = new Spreadsheet();
+    // PENGELUARAN
+    $pimpinan = $this->BendaharaModel->getPengeluaranByKode($tanggalAsli, $sebulan, '1B');
+    $sekretaris = $this->BendaharaModel->getPengeluaranByKode($tanggalAsli, $sebulan, '2B');
+    $bendahara = $this->BendaharaModel->getPengeluaranByKode($tanggalAsli, $sebulan, '3B');
+    $kmi = $this->BendaharaModel->getPengeluaranByKode($tanggalAsli, $sebulan, '4B');
+    $pengasuhan = $this->BendaharaModel->getPengeluaranByKode($tanggalAsli, $sebulan, '5B');
+    $dapur = $this->BendaharaModel->getPengeluaranByKode($tanggalAsli, $sebulan, '6B');
+    $pembangunan = $this->BendaharaModel->getPengeluaranByKode($tanggalAsli, $sebulan, '7B');
+    $listrik = $this->BendaharaModel->getPengeluaranByKode($tanggalAsli, $sebulan, '8B');
+    $kesejahteraan = $this->BendaharaModel->getPengeluaranByKode($tanggalAsli, $sebulan, '9B');
+    $lainLain = $this->BendaharaModel->getPengeluaranByKode($tanggalAsli, $sebulan, '10B');
 
-    $xls->getProperties()
-      ->setCreator('Ponpes Mawaridussalam')
-      ->setLastModifiedBy($this->session->username)
-      ->setTitle('Laporan Keuangan Detail Bulanan')
-      ->setSubject('Laporan Keuangan Detail Bulanan');
-
-    // SET DATA DI DOKUMEN
-
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A1', '')
-      ->setCellValue('B1', '')
-      ->setCellValue('C1', 'BULAN ' . strtoupper(Carbon::parse($tanggal)->locale('id_ID')->getTranslatedMonthName()) . ' ' . $startThn)
-      ->setCellValue('D1', '')
-      ->setCellValue('E1', '')
-      ->setCellValue('F1', '');
-
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A2', 'TANGGAL')
-      ->setCellValue('B2', 'KODE')
-      ->setCellValue('C2', 'KETERANGAN')
-      ->setCellValue('D2', 'DEBIT')
-      ->setCellValue('E2', 'KREDIT')
-      ->setCellValue('F2', 'SALDO');
-
-    $i = 3;
-
-    if ($saldoAwal < 1) {
-      $saldoAwal = 0;
-    }
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A' . $i, '')
-      ->setCellValue('B' . $i, '')
-      ->setCellValue('C' . $i, '')
-      ->setCellValue('D' . $i, '')
-      ->setCellValue('E' . $i, '')
-      ->setCellValue('F' . $i, $saldoAwal);
-    $i++;
-
-    for ($tgl = (int) $start; $tgl <= (int) $end; $tgl++) {
-      if ($tgl < 10) {
-        $tgl = '0' . $tgl;
-      }
-      $jlhDataPerHari = 0;
-      $pengeluaran = $this->BendaharaModel->getLaporanPengeluaranDetail($startThn . '-' . $startBln . '-' . $tgl);
-      if (count($pengeluaran) > 0) {
-        for ($x = 0; $x < count($pengeluaran); $x++) {
-          $xls->setActiveSheetIndex(0)
-            ->setCellValue('A' . $i, (int) $tgl)
-            ->setCellValue('B' . $i, $pengeluaran[$x]->kode)
-            ->setCellValue('C' . $i, $pengeluaran[$x]->keterangan)
-            ->setCellValue('D' . $i, 0)
-            ->setCellValue('E' . $i, $pengeluaran[$x]->nominal)
-            ->setCellValue('F' . $i, '');
-          $i++;
-          $jlhDataPerHari++;
-        }
-      } else {
-        $xls->setActiveSheetIndex(0)
-          ->setCellValue('A' . $i, (int) $tgl)
-          ->setCellValue('B' . $i, '')
-          ->setCellValue('C' . $i, '')
-          ->setCellValue('D' . $i, 0)
-          ->setCellValue('E' . $i, 0)
-          ->setCellValue('F' . $i, 0);
-        $i++;
-        $jlhDataPerHari++;
-      }
-      $pemasukan = $this->BendaharaModel->getPemasukanLainnyaDetail($startThn . '-' . $startBln . '-' . $tgl);
-      for ($x = 0; $x < count($pemasukan); $x++) {
-        $xls->setActiveSheetIndex(0)
-          ->setCellValue('A' . $i, (int) $tgl)
-          ->setCellValue('B' . $i, $pemasukan[$x]->kode)
-          ->setCellValue('C' . $i, $pemasukan[$x]->keterangan)
-          ->setCellValue('D' . $i, 0)
-          ->setCellValue('E' . $i, $pemasukan[$x]->nominal)
-          ->setCellValue('F' . $i, '');
-        $i++;
-        $jlhDataPerHari++;
-      }
-      $pemasukanSPP = $this->BendaharaModel->getPenerimaanSPPDetail($startThn . '-' . $startBln . '-' . $tgl);
-      for ($x = 0; $x < count($pemasukanSPP); $x++) {
-        $xls->setActiveSheetIndex(0)
-          ->setCellValue('A' . $i, (int) $tgl)
-          ->setCellValue('B' . $i, '1A')
-          ->setCellValue('C' . $i, 'Penerimaan Putra')
-          ->setCellValue('D' . $i, $pemasukanSPP[$x]->penerimaanPutra)
-          ->setCellValue('E' . $i, 0)
-          ->setCellValue('F' . $i, '');
-        $i++;
-        $jlhDataPerHari++;
-
-        $xls->setActiveSheetIndex(0)
-          ->setCellValue('A' . $i, (int) $tgl)
-          ->setCellValue('B' . $i, '2A')
-          ->setCellValue('C' . $i, 'Penerimaan Putri')
-          ->setCellValue('D' . $i, $pemasukanSPP[$x]->penerimaanPutri)
-          ->setCellValue('E' . $i, 0)
-          ->setCellValue('F' . $i, '');
-        $i++;
-        $jlhDataPerHari++;
-      }
-
-      $xls->setActiveSheetIndex(0)
-        ->setCellValue('A' . $i, '')
-        ->setCellValue('B' . $i, '')
-        ->setCellValue('C' . $i, '')
-        ->setCellValue('D' . $i, '=SUM(D' . ($i - $jlhDataPerHari) . ':D' . ($i - 1) . ')')
-        ->setCellValue('E' . $i, '=SUM(E' . ($i - $jlhDataPerHari) . ':E' . ($i - 1) . ')');
-
-      $penerimaanHariIni = (int) $xls->getActiveSheet()->getCell('D' . $i)->getCalculatedValue();
-      $pengeluaranHariIni = (int) $xls->getActiveSheet()->getCell('E' . $i)->getCalculatedValue();
-
-      // echo $penerimaanHariIni . $pengeluaranHariIni;
-      // die;
-
-      $saldo = $saldoAwal + ($penerimaanHariIni - $pengeluaranHariIni);
-      $saldoAwal = $saldo;
-
-      $xls->getActiveSheet()
-        ->setCellValue('F' . $i, $saldo);
-
-      $i += 2;
-    }
-
-    $xls->getActiveSheet()
-      ->getStyle('A3:B' . $i)
-      ->getAlignment('A3:B' . $i)
-      ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
-      ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-
-    $xls->getActiveSheet()->getStyle('D3:F' . $i)
-      ->getNumberFormat()
-      ->setFormatCode('_("Rp"* #,##0_);_("Rp"* \(#,##0\);_("Rp"* "-"??_);_(@_)');
-
-    foreach (range('A', 'F') as $columnID) {
-      $xls->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(TRUE);
-    }
-
-    $styleArray = [
-      'borders' => [
-        'allBorders' => [
-          'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
-          'color' => ['rgb' => '000000'],
-        ],
-      ],
+    $data = [
+      "penerimaanPutra" => $penerimaanPutra,
+      "penerimaanPutri" => $penerimaanPutri,
+      "pemasukanLainnya" => $pemasukanLainnya,
+      "pimpinan" => $pimpinan,
+      "sekretaris" => $sekretaris,
+      "bendahara" => $bendahara,
+      "kmi" => $kmi,
+      "pengasuhan" => $pengasuhan,
+      "dapur" => $dapur,
+      "pembangunan" => $pembangunan,
+      "listrik" => $listrik,
+      "kesejahteraan" => $kesejahteraan,
+      "lainLain" => $lainLain,
+      "tanggal" => $tanggal,
+      "tahun" => $startThn,
+      "bulan" => Carbon::parse($tanggal)->locale("id_ID")->monthName,
+      "awal" => (int) Carbon::parse($tanggalAsli)->format("d"),
+      "akhir" => (int) Carbon::parse($sebulan)->format("d"),
+      "cssFiles" => ["laporan.css", "print.min.css"],
+      "jsFiles" => ["print.min.js"]
     ];
-    $headingStyleArray = [
-      'font' => [
-        'bold' => true
-      ]
-    ];
-    $xls->getActiveSheet()->getStyle('A1:F2')->applyFromArray($headingStyleArray);
-    $xls->getActiveSheet()->getStyle('A1:F' . $i)->applyFromArray($styleArray);
 
-    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    header('Content-Disposition: attachment;filename="Laporan Keuangan Detail.xlsx"');
-    header('Cache-Control: max-age=0');
-    // If you're serving to IE 9, then the following may be needed
-    header('Cache-Control: max-age=1');
 
-    // If you're serving to IE over SSL, then the following may be needed
-    header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-    header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
-    header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
-    header('Pragma: public'); // HTTP/1.0
-
-    $writer = IOFactory::createWriter($xls, 'Xlsx');
-    $writer->save('php://output');
-    exit;
-
-    // $data = $this->BendaharaModel->getLaporanDetailPenerimaan($tanggalAsli, $sebulan);
-    // foreach ($data as $data) {
-    //   echo $data->penerimaanPutra;
-    //   echo "+";
-    //   echo $data->penerimaanPutri;
-    //   echo "<br>";
-    // }
+    $this->load->view("bendahara/pages/laporanPerKategori_export", $data);
   }
-  public function generateLaporanKategori($filterRentang)
+  public function generateLaporanKategori_old($filterRentang)
   {
     $tanggal = Carbon::createFromFormat("Y-m-d", $filterRentang);
     $tanggalAsli = $tanggal->format("Y-m-d");
