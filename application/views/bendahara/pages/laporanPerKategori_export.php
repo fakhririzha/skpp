@@ -46,7 +46,7 @@
           <p>BULAN <?= strtoupper($bulan) . ' ' . $tahun ?></p>
         </div>
         <hr>
-        <table class="table table-borderless">
+        <table class="table table-borderless big-font">
           <thead>
             <tr style="font-weight: 700;">
               <th style="width: 1%" class="text-center">A</th>
@@ -55,6 +55,211 @@
               </th>
             </tr>
           </thead>
+          <tbody>
+            <tr style="font-weight: 700;">
+              <td style="width: 1%"></td>
+              <td style="width: 2%" class="text-left">IURAN SANTRI</td>
+              <td style="width: 1%"></td>
+            </tr>
+            <tr>
+              <td style="width: 1%" class="text-center">1</td>
+              <td style="width: 2%" class="text-left">Penerimaan Putra</td>
+              <td style="width: 1%" class="text-right">
+                <?= "Rp. " . number_format($penerimaanPutra->putra, 0, ',', '.') ?>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 1%" class="text-center">2</td>
+              <td style="width: 2%" class="text-left">Penerimaan Putri</td>
+              <td style="width: 1%" class="text-right">
+                <?= "Rp. " . number_format($penerimaanPutri->putri, 0, ',', '.') ?>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 1%" class="text-center">3</td>
+              <td style="width: 2%" class="text-left">Lain-Lain</td>
+              <td style="width: 1%" class="text-right">
+                <?= "Rp. " . number_format($pemasukanLainnya->pemasukanLainnya, 0, ',', '.') ?>
+              </td>
+            </tr>
+            <tr style="font-weight: 700;">
+              <td style="width: 1%"></td>
+              <td style="width: 2%" class="text-center">TOTAL PENERIMAAN</td>
+              <td style="width: 1%" class="text-right">
+                <?php
+                $totalPenerimaan = $penerimaanPutra->putra + $penerimaanPutri->putri + $pemasukanLainnya->pemasukanLainnya;
+                echo "Rp. " . number_format($totalPenerimaan, 0, ',', '.');
+                ?>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <br>
+        <table class="table table-borderless big-font">
+          <thead>
+            <tr style="font-weight: 700;">
+              <th style="width: 1%" class="text-center">B</th>
+              <th style="width: 2%" class="text-center">PENGELUARAN</th>
+              <th style="width: 1%">
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="width: 1%" class="text-center">1</td>
+              <td style="width: 2%" class="text-left">Pimpinan</td>
+              <td style="width: 1%" class="text-right">
+                <?= "Rp. " . number_format($pimpinan->jumlah, 0, ',', '.') ?>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 1%" class="text-center">2</td>
+              <td style="width: 2%" class="text-left">Sekretaris</td>
+              <td style="width: 1%" class="text-right">
+                <?= "Rp. " . number_format($sekretaris->jumlah, 0, ',', '.') ?>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 1%" class="text-center">3</td>
+              <td style="width: 2%" class="text-left">Bendahara</td>
+              <td style="width: 1%" class="text-right">
+                <?= "Rp. " . number_format($bendahara->jumlah, 0, ',', '.') ?>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 1%" class="text-center">4</td>
+              <td style="width: 2%" class="text-left">KMI</td>
+              <td style="width: 1%" class="text-right">
+                <?= "Rp. " . number_format($kmi->jumlah, 0, ',', '.') ?>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 1%" class="text-center">5</td>
+              <td style="width: 2%" class="text-left">Pengasuhan</td>
+              <td style="width: 1%" class="text-right">
+                <?= "Rp. " . number_format($pengasuhan->jumlah, 0, ',', '.') ?>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 1%" class="text-center">6</td>
+              <td style="width: 2%" class="text-left">Dapur</td>
+              <td style="width: 1%" class="text-right">
+                <?= "Rp. " . number_format($dapur->jumlah, 0, ',', '.') ?>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 1%" class="text-center">7</td>
+              <td style="width: 2%" class="text-left">Pembangunan</td>
+              <td style="width: 1%" class="text-right">
+                <?= "Rp. " . number_format($pembangunan->jumlah, 0, ',', '.') ?>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 1%" class="text-center">8</td>
+              <td style="width: 2%" class="text-left">Listrik</td>
+              <td style="width: 1%" class="text-right">
+                <?= "Rp. " . number_format($listrik->jumlah, 0, ',', '.') ?>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 1%" class="text-center">9</td>
+              <td style="width: 2%" class="text-left">Kesejahteraan</td>
+              <td style="width: 1%" class="text-right">
+                <?= "Rp. " . number_format($kesejahteraan->jumlah, 0, ',', '.') ?>
+              </td>
+            <tr>
+              <td style="width: 1%" class="text-center">10</td>
+              <td style="width: 2%" class="text-left">Lain-Lain</td>
+              <td style="width: 1%" class="text-right">
+                <?= "Rp. " . number_format($lainLain->jumlah, 0, ',', '.') ?>
+              </td>
+            </tr>
+            </tr>
+            <tr style="font-weight: 700;">
+              <td style="width: 1%"></td>
+              <td style="width: 2%" class="text-center">TOTAL PENGELUARAN</td>
+              <td style="width: 1%" class="text-right">
+                <?php
+                $totalPengeluaran = $pimpinan->jumlah + $sekretaris->jumlah + $bendahara->jumlah + $kmi->jumlah + $pengasuhan->jumlah + $dapur->jumlah + $pembangunan->jumlah + $listrik->jumlah + $kesejahteraan->jumlah + $lainLain->jumlah;
+                echo "Rp. " . number_format($totalPengeluaran, 0, ',', '.');
+                ?>
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr style="font-weight: 700;">
+              <td style="width: 1%"></td>
+              <td style="width: 2%" class="text-left">Saldo</td>
+              <td style="width: 1%" class="text-right">
+                <?php
+                echo "Rp. " . number_format(($totalPenerimaan - $totalPengeluaran), 0, ',', '.');
+                ?>
+              </td>
+            </tr>
+            <tr style="font-weight: 700;">
+              <td style="width: 1%"></td>
+              <td style="width: 2%" class="text-left">Saldo Bulan Lalu</td>
+              <td style="width: 1%" class="text-right">
+                <?php
+                echo "Rp. " . number_format($saldoAwal, 0, ',', '.');
+                ?>
+              </td>
+            </tr>
+            <tr style="font-weight: 700;">
+              <td style="width: 1%"></td>
+              <td style="width: 2%" class="text-left">Saldo Akhir</td>
+              <td style="width: 1%" class="text-right">
+                <?php
+                echo "Rp. " . number_format(($totalPenerimaan - $totalPengeluaran + $saldoAwal), 0, ',', '.');
+                ?>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <table class="table table-borderless big-font">
+          <tr>
+            <td style="width: 1%" class="text-center"></td>
+            <td style="width: 2%" class="text-center">Bendahara</td>
+            <td style="width: 2%" class="text-center">Bagian</td>
+          </tr>
+          <tr>
+            <td style="width: 1%" class="text-center"></td>
+            <td style="width: 2%" class="text-center">Pondok Pesantren Mawaridussalam</td>
+            <td style="width: 2%" class="text-center">Pembukuan</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="width: 1%" class="text-center"></td>
+            <td style="width: 2%" class="text-center">Ust. M. Harmain, SE, M.M</td>
+            <td style="width: 2%" class="text-center">Ust. Taufik Romadhon, DLT</td>
+          </tr>
         </table>
       </div>
     </div>

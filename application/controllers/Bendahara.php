@@ -178,14 +178,25 @@ class Bendahara extends CI_Controller
       $nominal = $this->input->post("nominalTransaksi");
       $nominal = str_replace("Rp ", "", $nominal);
       $nominal = str_replace(",", "", $nominal);
-      $data = [
-        "kodeTransaksi" => $this->input->post("kodeTransaksi"),
-        "keterangan" => $this->input->post("keterangan"),
-        "tanggalTransaksi" => $this->input->post("tanggalTransaksi"),
-        "nominalTransaksi" => $nominal,
-        "status" => 'bukabuku',
-        "idPetugas" => $this->session->id
-      ];
+      if ($this->input->post("kodeTransaksi") != "4A") {
+        $data = [
+          "kodeTransaksi" => $this->input->post("kodeTransaksi"),
+          "keterangan" => $this->input->post("keterangan"),
+          "tanggalTransaksi" => $this->input->post("tanggalTransaksi"),
+          "nominalTransaksi" => $nominal,
+          "status" => 'bukabuku',
+          "idPetugas" => $this->session->id
+        ];
+      } else {
+        $data = [
+          "kodeTransaksi" => $this->input->post("kodeTransaksi"),
+          "keterangan" => $this->input->post("keterangan"),
+          "tanggalTransaksi" => "1970-01-01",
+          "nominalTransaksi" => $nominal,
+          "status" => 'bukabuku',
+          "idPetugas" => $this->session->id
+        ];
+      }
 
       if ($this->BendaharaModel->addPemasukanLainnya($data)) {
         $this->session->set_flashdata('suksesMsg', 'Berhasil menambah pemasukan.');
@@ -367,157 +378,6 @@ class Bendahara extends CI_Controller
 
     $this->load->view("bendahara/pages/laporanSPP_export", $data);
   }
-  public function generateLaporanSPP_old($filterRentang)
-  {
-    $tanggal = Carbon::createFromFormat("Y-m-d", $filterRentang);
-    $tanggalAsli = $tanggal->format("Y-m-d");
-    $sebulan = Carbon::createFromFormat("Y-m-d H:i:s", $tanggal->addMonth(1)->subDay(1))->format("Y-m-d");
-    $tanggal = $tanggal->subDay(1);
-
-    $pemasukanLainnya = $this->BendaharaModel->getPemasukanLainnya($tanggalAsli, $sebulan);
-    $laporanSPP = $this->BendaharaModel->getLaporanSPP($tanggalAsli, $sebulan);
-
-    $xls = new Spreadsheet();
-
-    // SET PROPERTIES
-    $xls->getProperties()
-      ->setCreator('Ponpes Mawaridussalam')
-      ->setLastModifiedBy($this->session->username)
-      ->setTitle('Laporan SPP Bulanan')
-      ->setSubject('Laporan SPP Bulanan');
-
-    // SET DATA DI DOKUMEN
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A1', 'NO.')
-      ->setCellValue('B1', 'TANGGAL')
-      ->setCellValue('C1', 'HARI')
-      ->setCellValue('D1', 'PENERIMAAN PUTRA')
-      ->setCellValue('E1', 'PENERIMAAN PUTRI')
-      ->setCellValue('F1', 'JUMLAH');
-
-    $i = 2;
-    $num = 1;
-    foreach ($laporanSPP as $data) {
-      $hari = Carbon::parse($data->tanggal);
-      $hari = $hari->locale('id_ID')->dayName;
-      $tanggal = DateTime::createFromFormat("Y-m-d", $data->tanggal)->format("d/m/Y");
-      $xls->setActiveSheetIndex(0)
-        ->setCellValue('A' . $i, $num)
-        ->setCellValue('B' . $i, $tanggal)
-        ->setCellValue('C' . $i, strtoupper($hari))
-        ->setCellValue('D' . $i, $data->jlhPutra)
-        ->setCellValue('E' . $i, $data->jlhPutri)
-        ->setCellValue('F' . $i, $data->jumlah);
-      $i++;
-      $num++;
-    }
-
-    $lainnya = $pemasukanLainnya->pemasukanLainnya;
-    if ($pemasukanLainnya->pemasukanLainnya == "") {
-      $lainnya = 0;
-    }
-
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A' . $i, $num)
-      ->setCellValue('B' . $i, 'LAIN-LAIN')
-      ->setCellValue('C' . $i, '-')
-      ->setCellValue('D' . $i, '-')
-      ->setCellValue('E' . $i, '-')
-      ->setCellValue('F' . $i, $lainnya);
-    $i++;
-
-    $xls->setActiveSheetIndex(0)
-      ->mergeCells('A' . $i . ':C' . $i)
-      ->setCellValue('A' . $i, 'TOTAL PENERIMAAN')
-      ->setCellValue('D' . $i, '=SUM(D2:D' . ($i - 1) . ')')
-      ->setCellValue('E' . $i, '=SUM(E2:E' . ($i - 1) . ')')
-      ->setCellValue('F' . $i, '=SUM(D' . $i . ':E' . $i . ')+F' . ($i - 1));
-
-    $xls->getActiveSheet()
-      ->getStyle('A' . $i)
-      ->getAlignment()
-      ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
-      ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-
-    $xls->getActiveSheet()->getStyle('A1:F1')
-      ->getAlignment()
-      ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
-      ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-
-    $xls->getActiveSheet()->getStyle('A2:A' . ($i - 1))
-      ->getAlignment()
-      ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
-      ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-
-    $xls->getActiveSheet()->getStyle('B2:B' . ($i - 1))
-      ->getAlignment()
-      ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
-      ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-
-    $xls->getActiveSheet()->getStyle('C2:C' . ($i - 1))
-      ->getAlignment()
-      ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
-      ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-
-    $xls->getActiveSheet()->getStyle('D' . ($i - 1))
-      ->getAlignment()
-      ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
-      ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-
-    $xls->getActiveSheet()->getStyle('E' . ($i - 1))
-      ->getAlignment()
-      ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
-      ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-
-    $xls->getActiveSheet()->getStyle('D2:D' . $i)
-      ->getNumberFormat()
-      ->setFormatCode('_("Rp"* #,##0_);_("Rp"* \(#,##0\);_("Rp"* "-"??_);_(@_)');
-
-    $xls->getActiveSheet()->getStyle('E2:E' . $i)
-      ->getNumberFormat()
-      ->setFormatCode('_("Rp"* #,##0_);_("Rp"* \(#,##0\);_("Rp"* "-"??_);_(@_)');
-
-    $xls->getActiveSheet()->getStyle('F2:F' . $i)
-      ->getNumberFormat()
-      ->setFormatCode('_("Rp"* #,##0_);_("Rp"* \(#,##0\);_("Rp"* "-"??_);_(@_)');
-
-    foreach (range('A', 'F') as $columnID) {
-      $xls->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(TRUE);
-    }
-
-    $styleArray = [
-      'borders' => [
-        'allBorders' => [
-          'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
-          'color' => ['rgb' => '000000'],
-        ],
-      ],
-    ];
-
-    $bulan = Carbon::parse($filterRentang);
-    $bulan = $bulan->locale('id_ID')->monthName;
-
-
-    $xls->getActiveSheet()->getStyle('A1:F' . $i)->applyFromArray($styleArray);
-    $xls->getActiveSheet()->setTitle('Report SPP');
-    $xls->setActiveSheetIndex(0);
-
-    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    header('Content-Disposition: attachment;filename="Report SPP Bulan ' . $bulan . '.xlsx"');
-    header('Cache-Control: max-age=0');
-    // If you're serving to IE 9, then the following may be needed
-    header('Cache-Control: max-age=1');
-
-    // If you're serving to IE over SSL, then the following may be needed
-    header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-    header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
-    header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
-    header('Pragma: public'); // HTTP/1.0
-
-    $writer = IOFactory::createWriter($xls, 'Xlsx');
-    $writer->save('php://output');
-    exit;
-  }
   public function generateLaporanKeuangan($filterRentang = '2019-07-01')
   {
     $tanggal = Carbon::createFromFormat("Y-m-d", $filterRentang);
@@ -645,7 +505,7 @@ class Bendahara extends CI_Controller
     $tanggal = Carbon::createFromFormat("Y-m-d", $filterRentang);
     $tanggalAsli = $tanggal->format("Y-m-d");
     $sebulan = Carbon::createFromFormat("Y-m-d H:i:s", $tanggal->addMonth(1)->subDay(1))->format("Y-m-d");
-    $tanggal = $tanggal->subDay(1);
+    $tanggal = $tanggal->subDay(1)->subMonth(1)->lastOfMonth();
 
     $pemasukan = $this->BendaharaModel->getPemasukan($tanggal->format("Y-m-d"))->pemasukan;
     $pengeluaran = $this->BendaharaModel->getPengeluaran($tanggal->format("Y-m-d"))->pengeluaran;
@@ -685,6 +545,7 @@ class Bendahara extends CI_Controller
       "listrik" => $listrik,
       "kesejahteraan" => $kesejahteraan,
       "lainLain" => $lainLain,
+      "saldoAwal" => $saldoAwal,
       "tanggal" => $tanggal,
       "tahun" => $startThn,
       "bulan" => Carbon::parse($tanggal)->locale("id_ID")->monthName,
@@ -696,272 +557,5 @@ class Bendahara extends CI_Controller
 
 
     $this->load->view("bendahara/pages/laporanPerKategori_export", $data);
-  }
-  public function generateLaporanKategori_old($filterRentang)
-  {
-    $tanggal = Carbon::createFromFormat("Y-m-d", $filterRentang);
-    $tanggalAsli = $tanggal->format("Y-m-d");
-    $sebulan = Carbon::createFromFormat("Y-m-d H:i:s", $tanggal->addMonth(1)->subDay(1))->format("Y-m-d");
-    $tanggal = $tanggal->subDay(1);
-
-    $pemasukan = $this->BendaharaModel->getPemasukan($tanggal->format("Y-m-d"))->pemasukan;
-    $pengeluaran = $this->BendaharaModel->getPengeluaran($tanggal->format("Y-m-d"))->pengeluaran;
-
-    $saldoAwal = $pemasukan - $pengeluaran;
-
-    $startThn = (int) $tanggal->format("Y");
-
-    // PENERIMAAN
-    $penerimaanPutra = $this->BendaharaModel->getPenerimaanPutra($tanggalAsli, $sebulan);
-    $penerimaanPutri = $this->BendaharaModel->getPenerimaanPutri($tanggalAsli, $sebulan);
-    $pemasukanLainnya = $this->BendaharaModel->getPemasukanLainnya($tanggalAsli, $sebulan);
-
-    // PENGELUARAN
-    $pimpinan = $this->BendaharaModel->getPengeluaranByKode($tanggalAsli, $sebulan, '1B');
-    $sekretaris = $this->BendaharaModel->getPengeluaranByKode($tanggalAsli, $sebulan, '2B');
-    $bendahara = $this->BendaharaModel->getPengeluaranByKode($tanggalAsli, $sebulan, '3B');
-    $kmi = $this->BendaharaModel->getPengeluaranByKode($tanggalAsli, $sebulan, '4B');
-    $pengasuhan = $this->BendaharaModel->getPengeluaranByKode($tanggalAsli, $sebulan, '5B');
-    $dapur = $this->BendaharaModel->getPengeluaranByKode($tanggalAsli, $sebulan, '6B');
-    $pembangunan = $this->BendaharaModel->getPengeluaranByKode($tanggalAsli, $sebulan, '7B');
-    $listrik = $this->BendaharaModel->getPengeluaranByKode($tanggalAsli, $sebulan, '8B');
-    $kesejahteraan = $this->BendaharaModel->getPengeluaranByKode($tanggalAsli, $sebulan, '9B');
-    $lainLain = $this->BendaharaModel->getPengeluaranByKode($tanggalAsli, $sebulan, '10B');
-
-    $xls = new Spreadsheet();
-
-    $xls->getProperties()
-      ->setCreator('Ponpes Mawaridussalam')
-      ->setLastModifiedBy($this->session->username)
-      ->setTitle('Laporan Per Kategori')
-      ->setSubject('Laporan Per Kategori');
-
-    // SET HEADING DI DOKUMEN
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A1', '')
-      ->setCellValue('B1', '')
-      ->setCellValue('C1', '');
-
-    $xls->setActiveSheetIndex(0)
-      ->mergeCells('A2:C2')
-      ->setCellValue('A2', 'LAPORAN KEUANGAN');
-
-    $xls->setActiveSheetIndex(0)
-      ->mergeCells('A3:C3')
-      ->setCellValue('A3', 'BULAN ' . strtoupper(Carbon::parse($tanggal)->locale('id_ID')->getTranslatedMonthName()) . ' ' . $startThn);
-
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A4', '')
-      ->setCellValue('B4', '')
-      ->setCellValue('C4', '');
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A5', '')
-      ->setCellValue('B5', '')
-      ->setCellValue('C5', '');
-
-    $i = 6;
-    $num = 1;
-
-    // HEADING PENERIMAAN
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A' . $i, 'A')
-      ->setCellValue('B' . $i, 'PENERIMAAN')
-      ->setCellValue('C' . $i, '');
-    $headingPenerimaan = $i;
-    $i++;
-
-    // IURAN SANTRI
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A' . $i, '')
-      ->setCellValue('B' . $i, 'IURAN SANTRI')
-      ->setCellValue('C' . $i, '');
-    $i++;
-
-    // DATA PENERIMAAN
-    $jlhData = 0;
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A' . $i, $num)
-      ->setCellValue('B' . $i, 'Penerimaan Putra')
-      ->setCellValue('C' . $i, $penerimaanPutra->putra > 0 ? $penerimaanPutra->putra : 0);
-    $i++;
-    $num++;
-    $jlhData++;
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A' . $i, $num)
-      ->setCellValue('B' . $i, 'Penerimaan Putri')
-      ->setCellValue('C' . $i, $penerimaanPutri->putri > 0 ? $penerimaanPutri->putri : 0);
-    $i++;
-    $num++;
-    $jlhData++;
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A' . $i, $num)
-      ->setCellValue('B' . $i, 'Penerimaan Lainnya')
-      ->setCellValue('C' . $i, $pemasukanLainnya->pemasukanLainnya > 0 ? $pemasukanLainnya->pemasukanLainnya : 0);
-    $i++;
-    $num++;
-    $jlhData++;
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A' . $i, '')
-      ->setCellValue('B' . $i, 'TOTAL PENERIMAAN')
-      ->setCellValue('C' . $i, '=SUM(C' . ($i - $jlhData) . ':C' . ($i - 1) . ')');
-    $barisPenerimaan = $i;
-    $i += 2;
-    $num = 1;
-
-    // HEADING PENGELUARAN
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A' . $i, 'B')
-      ->setCellValue('B' . $i, 'PENGELUARAN')
-      ->setCellValue('C' . $i, '');
-    $headingPengeluaran = $i;
-    $i++;
-
-    // DATA PENGELUARAN
-    $jlhData = 0;
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A' . $i, $num)
-      ->setCellValue('B' . $i, 'Pimpinan')
-      ->setCellValue('C' . $i, $pimpinan->jumlah > 0 ? $pimpinan->jumlah : 0);
-    $i++;
-    $num++;
-    $jlhData++;
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A' . $i, $num)
-      ->setCellValue('B' . $i, 'Sekretaris')
-      ->setCellValue('C' . $i, $sekretaris->jumlah > 0 ? $sekretaris->jumlah : 0);
-    $i++;
-    $num++;
-    $jlhData++;
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A' . $i, $num)
-      ->setCellValue('B' . $i, 'Bendahara')
-      ->setCellValue('C' . $i, $bendahara->jumlah > 0 ? $bendahara->jumlah : 0);
-    $i++;
-    $num++;
-    $jlhData++;
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A' . $i, $num)
-      ->setCellValue('B' . $i, 'KMI')
-      ->setCellValue('C' . $i, $kmi->jumlah > 0 ? $kmi->jumlah : 0);
-    $i++;
-    $num++;
-    $jlhData++;
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A' . $i, $num)
-      ->setCellValue('B' . $i, 'Pengasuhan')
-      ->setCellValue('C' . $i, $pengasuhan->jumlah > 0 ? $pengasuhan->jumlah : 0);
-    $i++;
-    $num++;
-    $jlhData++;
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A' . $i, $num)
-      ->setCellValue('B' . $i, 'Dapur')
-      ->setCellValue('C' . $i, $dapur->jumlah > 0 ? $dapur->jumlah : 0);
-    $i++;
-    $num++;
-    $jlhData++;
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A' . $i, $num)
-      ->setCellValue('B' . $i, 'Pembangunan')
-      ->setCellValue('C' . $i, $pembangunan->jumlah > 0 ? $pembangunan->jumlah : 0);
-    $i++;
-    $num++;
-    $jlhData++;
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A' . $i, $num)
-      ->setCellValue('B' . $i, 'Listrik')
-      ->setCellValue('C' . $i, $listrik->jumlah > 0 ? $listrik->jumlah : 0);
-    $i++;
-    $num++;
-    $jlhData++;
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A' . $i, $num)
-      ->setCellValue('B' . $i, 'Kesejahteraan')
-      ->setCellValue('C' . $i, $kesejahteraan->jumlah > 0 ? $kesejahteraan->jumlah : 0);
-    $i++;
-    $num++;
-    $jlhData++;
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A' . $i, $num)
-      ->setCellValue('B' . $i, 'Lain-Lain')
-      ->setCellValue('C' . $i, $lainLain->jumlah > 0 ? $lainLain->jumlah : 0);
-    $i++;
-    $num++;
-    $jlhData++;
-
-    $xls->setActiveSheetIndex(0)
-      ->mergeCells('A' . $i . ':B' . $i)
-      ->setCellValue('A' . $i, 'TOTAL PENGELUARAN')
-      ->setCellValue('C' . $i, '=SUM(C' . ($i - $jlhData) . ':C' . ($i - 1) . ')');
-    $barisPengeluaran = $i;
-    $i += 2;
-    $num = 1;
-
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A' . $i, '')
-      ->setCellValue('B' . $i, 'Saldo Bulan Ini')
-      ->setCellValue('C' . $i, '=C' . $barisPenerimaan . '-C' . $barisPengeluaran);
-    $i++;
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A' . $i, '')
-      ->setCellValue('B' . $i, 'Saldo Bulan Lalu')
-      ->setCellValue('C' . $i, $saldoAwal);
-    $i++;
-    $xls->setActiveSheetIndex(0)
-      ->setCellValue('A' . $i, '')
-      ->setCellValue('B' . $i, 'Saldo Akhir')
-      ->setCellValue('C' . $i, '=C' . ($i - 2) . '-C' . ($i - 1));
-    $i++;
-
-    $xls->getActiveSheet()
-      ->getStyle('B' . $headingPenerimaan)
-      ->getAlignment('B' . $headingPenerimaan)
-      ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
-      ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-    $xls->getActiveSheet()
-      ->getStyle('B' . $headingPengeluaran)
-      ->getAlignment('B' . $headingPengeluaran)
-      ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
-      ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-
-    // $xls->getActiveSheet()
-    //   ->getStyle('A2:C' . ($i - 1))
-    //   ->getAlignment('A2:C' . ($i - 1))
-    //   ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
-    //   ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-
-    $xls->getActiveSheet()->getStyle('C8:C' . $i)
-      ->getNumberFormat()
-      ->setFormatCode('_("Rp"* #,##0_);_("Rp"* \(#,##0\);_("Rp"* "-"??_);_(@_)');
-
-    foreach (range('A', 'C') as $columnID) {
-      $xls->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(TRUE);
-    }
-
-    $styleArray = [
-      'borders' => [
-        'allBorders' => [
-          'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
-          'color' => ['rgb' => '000000'],
-        ],
-      ],
-    ];
-    $xls->getActiveSheet()->getStyle('A1:C' . ($i - 1))->applyFromArray($styleArray);
-
-    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    header('Content-Disposition: attachment;filename="Laporan Pengeluaran.xlsx"');
-    header('Cache-Control: max-age=0');
-    // If you're serving to IE 9, then the following may be needed
-    header('Cache-Control: max-age=1');
-
-    // If you're serving to IE over SSL, then the following may be needed
-    header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-    header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
-    header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
-    header('Pragma: public'); // HTTP/1.0
-
-    $writer = IOFactory::createWriter($xls, 'Xlsx');
-    $writer->save('php://output');
-    exit;
   }
 }
