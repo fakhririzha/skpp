@@ -210,7 +210,7 @@ class Admin extends CI_Controller
       $iuranTahunan = str_replace(",", "", $iuranTahunan);
 
       if ($iuranBulanan == "" || $iuranBulananSubsidi == "" || $iuranTahunan == "" || $iuranBulanan == "0" || $iuranBulananSubsidi == "0" || $iuranTahunan == "0") {
-        $this->session->set_flashdata('actionMsg', "$iuranBulanan, $iuranBulananSubsidi, $iuranTahunan");
+        $this->session->set_flashdata('actionMsg', "Iuran tidak boleh kosong!");
         redirect("admin/kelas");
       } else {
         $data = [
