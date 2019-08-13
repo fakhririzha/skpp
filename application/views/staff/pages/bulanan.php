@@ -62,10 +62,10 @@
                     <td class="text-center"><?= $siswa->kode_kelas ?></td>
                     <td class="text-center"><?= ucfirst($siswa->status) ?></td>
                     <td class="text-center">
-                      <a class="btn btn-success text-white" href="<?= base_url() ?>bendahara/bayarBulanan?sttb=<?= $siswa->sttb ?>"><i class="fas fa-cash-register"></i> Bayar</a>
+                      <a class="btn btn-success text-white" href="<?= base_url() ?>staff/bayarBulanan?sttb=<?= $siswa->sttb ?>"><i class="fas fa-cash-register"></i> Bayar</a>
                     </td>
                     <td class="text-center">
-                      <a class="btn btn-primary text-white" href="<?= base_url() ?>bendahara/historiBulanan?sttb=<?= $siswa->sttb ?>"><i class="fas fa-history"></i> Histori</a>
+                      <a class="btn btn-primary text-white" href="<?= base_url() ?>staff/historiBulanan?sttb=<?= $siswa->sttb ?>"><i class="fas fa-history"></i> Histori</a>
                     </td>
                   </tr>
 

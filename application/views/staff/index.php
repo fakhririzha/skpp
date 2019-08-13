@@ -49,31 +49,31 @@
             </a>
           </li>
           <li>
-            <a href="<?= base_url() ?>bendahara/bulanan">
+            <a href="<?= base_url() ?>staff/bulanan">
               <i class="now-ui-icons business_money-coins"></i>
               <p>Iuran Bulanan</p>
             </a>
           </li>
           <li>
-            <a href="<?= base_url() ?>bendahara/tahunan">
+            <a href="<?= base_url() ?>staff/tahunan">
               <i class="now-ui-icons business_money-coins"></i>
               <p>Iuran Tahunan</p>
             </a>
           </li>
           <li>
-            <a href="<?= base_url() ?>bendahara/pemasukanLainnya">
+            <a href="<?= base_url() ?>staff/pemasukanLainnya">
               <i class="now-ui-icons business_money-coins"></i>
               <p>Pemasukan Lainnya</p>
             </a>
           </li>
           <li>
-            <a href="<?= base_url() ?>bendahara/histori">
+            <a href="<?= base_url() ?>staff/histori">
               <i class="fas fa-history"></i>
               <p>Histori Transaksi</p>
             </a>
           </li>
           <li>
-            <a href="<?= base_url() ?>bendahara/pengeluaran">
+            <a href="<?= base_url() ?>staff/pengeluaran">
               <i class="now-ui-icons shopping_cart-simple"></i>
               <p>Pengeluaran</p>
             </a>

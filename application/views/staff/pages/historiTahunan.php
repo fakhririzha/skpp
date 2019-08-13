@@ -50,7 +50,7 @@
                   </td>
                   <td class="text-center"><?= $trx->nominal ?></td>
                   <td class="text-center">
-                    <a class="btn btn-success text-white" href="<?= base_url() ?>bendahara/cetakTahunan?sttb=<?= $trx->sttbSiswa ?>&no_ref=<?= $trx->no_ref ?>"><i class="fas fa-print"></i> Cetak</a>
+                    <a class="btn btn-success text-white" href="<?= base_url() ?>staff/cetakTahunan?sttb=<?= $trx->sttbSiswa ?>&no_ref=<?= $trx->no_ref ?>"><i class="fas fa-print"></i> Cetak</a>
                   </td>
                   <td class="text-center">
                     <button class="btn btn-danger text-white" data-toggle="modal" data-target="#hapus-tahunan-<?= $trx->no_ref ?>-modal"><i class="fas fa-trash-alt"></i> Hapus</button>
@@ -69,7 +69,7 @@
                             <p>Aksi ini tidak dapat dibatalkan setelah anda menekan tombol hapus!</p>
                           </div>
                           <div class="modal-footer">
-                            <a href="<?= base_url() ?>bendahara/hapusTahunan?sttb=<?= $trx->sttbSiswa ?>&no_ref=<?= $trx->no_ref ?>" class="btn btn-danger text-white"> Hapus</a>
+                            <a href="<?= base_url() ?>staff/hapusTahunan?sttb=<?= $trx->sttbSiswa ?>&no_ref=<?= $trx->no_ref ?>" class="btn btn-danger text-white"> Hapus</a>
                             &nbsp;&nbsp;|&nbsp;&nbsp;
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
                           </div>

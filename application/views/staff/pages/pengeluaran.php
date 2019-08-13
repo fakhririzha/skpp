@@ -23,7 +23,7 @@
       </div>
       <div class="card-body">
         <!-- FORM UNTUK IURAN BULANAN -->
-        <form action="<?= base_url() ?>bendahara/addPengeluaran" method="POST">
+        <form action="<?= base_url() ?>staff/addPengeluaran" method="POST">
           <div class="row">
             <div class="col-md-12">
               <div class="form-group">
