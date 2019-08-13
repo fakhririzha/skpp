@@ -36,8 +36,10 @@ class Auth extends CI_Controller
           $this->session->unset_userdata('captcha');
           if ($this->session->jabatan == "admin") {
             redirect("admin");
-          } else {
+          } else if ($this->session->jabatan == "bendahara") {
             redirect("bendahara");
+          } else {
+            redirect("staff");
           }
         }
         // CAPTCHA FALSE
