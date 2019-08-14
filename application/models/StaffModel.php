@@ -67,19 +67,19 @@ class StaffModel extends CI_Model
   }
   public function getLaporanSPP($tanggalAsli, $sebulan)
   {
-    return $this->db->query("SELECT * FROM vLaporanSPP WHERE tanggal BETWEEN '$tanggalAsli' AND '$sebulan'")->result();
+    return $this->db->query("SELECT * FROM vlaporanspp WHERE tanggal BETWEEN '$tanggalAsli' AND '$sebulan'")->result();
   }
   public function getLaporanKeuangan($tanggalAsli, $sebulan)
   {
-    return $this->db->query("SELECT * FROM vLaporanKeuangan WHERE tanggal BETWEEN '$tanggalAsli' AND '$sebulan'")->result();
+    return $this->db->query("SELECT * FROM vlaporankeuangan WHERE tanggal BETWEEN '$tanggalAsli' AND '$sebulan'")->result();
   }
   public function getLaporanPengeluaran($tanggalAsli, $sebulan)
   {
-    return $this->db->query("SELECT * FROM vLaporanPengeluaran WHERE tanggal BETWEEN '$tanggalAsli' AND '$sebulan'")->result();
+    return $this->db->query("SELECT * FROM vlaporanpengeluaran WHERE tanggal BETWEEN '$tanggalAsli' AND '$sebulan'")->result();
   }
   public function getLaporanDetailPenerimaan($tanggalAsli, $sebulan)
   {
-    return $this->db->query("SELECT * FROM vLaporanDetailPenerimaan WHERE tanggal BETWEEN '$tanggalAsli' AND '$sebulan'")->result();
+    return $this->db->query("SELECT * FROM vlaporanDetailpenerimaan WHERE tanggal BETWEEN '$tanggalAsli' AND '$sebulan'")->result();
   }
   public function getLaporanPengeluaranDetail($tanggal)
   {
@@ -91,15 +91,15 @@ class StaffModel extends CI_Model
   }
   public function getPenerimaanSPPDetail($tanggal)
   {
-    return $this->db->query("SELECT * FROM vLaporanDetailPenerimaan WHERE tanggal = '$tanggal'")->result();
+    return $this->db->query("SELECT * FROM vlaporandetailpenerimaan WHERE tanggal = '$tanggal'")->result();
   }
   public function getPenerimaanPutra($tanggalAsli, $sebulan)
   {
-    return $this->db->query("SELECT SUM(penerimaanPutra) AS putra FROM vPenerimaanPutra WHERE tanggal BETWEEN '$tanggalAsli' AND '$sebulan'")->row();
+    return $this->db->query("SELECT SUM(penerimaanPutra) AS putra FROM vpenerimaanputra WHERE tanggal BETWEEN '$tanggalAsli' AND '$sebulan'")->row();
   }
   public function getPenerimaanPutri($tanggalAsli, $sebulan)
   {
-    return $this->db->query("SELECT SUM(penerimaanPutri) AS putri FROM vPenerimaanPutri WHERE tanggal BETWEEN '$tanggalAsli' AND '$sebulan'")->row();
+    return $this->db->query("SELECT SUM(penerimaanPutri) AS putri FROM vpenerimaanputri WHERE tanggal BETWEEN '$tanggalAsli' AND '$sebulan'")->row();
   }
   public function getPengeluaranByKode($tanggalAsli, $sebulan, $kode)
   {
