@@ -27,15 +27,15 @@ class BendaharaModel extends CI_Model
   }
   public function getSiswaByKelas($kelas)
   {
-    return $this->db->where("kode_kelas", $kelas)->get("vSiswaKelas")->result();
+    return $this->db->where("kode_kelas", $kelas)->get("vsiswakelas")->result();
   }
   public function getSiswaBySttb($sttb)
   {
-    return $this->db->where("sttb", $sttb)->get("vSiswaKelas")->row();
+    return $this->db->where("sttb", $sttb)->get("vsiswakelas")->row();
   }
   public function getNominalBayar($sttb)
   {
-    return $this->db->where("sttb", $sttb)->get("vSiswaKelas")->row();
+    return $this->db->where("sttb", $sttb)->get("vsiswakelas")->row();
   }
   public function getAllKodeTransaksi()
   {
@@ -43,15 +43,15 @@ class BendaharaModel extends CI_Model
   }
   public function getAllTransaksi()
   {
-    return $this->db->get("vHistoriTransaksi")->result();
+    return $this->db->get("vhistoritransaksi")->result();
   }
   public function getTransaksiBulananBySttb($sttb)
   {
-    return $this->db->where("sttb", $sttb)->get("vHistoriTransaksiBulanan")->result();
+    return $this->db->where("sttb", $sttb)->get("vhistoritransaksibulanan")->result();
   }
   public function getTransaksiTahunanBySttb($sttb)
   {
-    return $this->db->where("sttb", $sttb)->get("vHistoriTransaksiTahunan")->result();
+    return $this->db->where("sttb", $sttb)->get("vhistoritransaksitahunan")->result();
   }
   public function getPemasukan($tanggal)
   {
