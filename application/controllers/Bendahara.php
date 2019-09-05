@@ -266,6 +266,17 @@ class Bendahara extends CI_Controller
       $this->load->view('bendahara/index', $data);
     }
   }
+  public function hapusPemasukanLainnya()
+  {
+    $no_ref = $this->input->get("no_ref");
+
+    if ($this->BendaharaModel->hapusPemasukanLainnya($no_ref) > 0) {
+      $this->session->set_flashdata('suksesMsg', 'Sukses menghapus transaksi pemasukan dengan No. Ref : ' . $no_ref . '.');
+    } else {
+      $this->session->set_flashdata('actionMsg', 'Gagal menghapus transaksi pemasukan. Silahkan coba lagi.');
+    }
+    redirect("bendahara/aturPemasukan");
+  }
 
   public function pengeluaran()
   {

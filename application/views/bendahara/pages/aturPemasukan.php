@@ -65,7 +65,7 @@
                             </button>
                           </div>
                           <div class="modal-body">
-                            <p>Apakah anda yakin akan menghapus iuran bulanan dengan No. Ref <?= $trx->no_ref ?> ?</p>
+                            <p>Apakah anda yakin akan menghapus transaksi pemasukan dengan No. Ref <?= $trx->no_ref ?> ?</p>
                             <p>Aksi ini tidak dapat dibatalkan setelah anda menekan tombol hapus!</p>
                           </div>
                           <div class="modal-footer">
