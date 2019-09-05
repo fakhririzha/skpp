@@ -109,6 +109,10 @@ class BendaharaModel extends CI_Model
   {
     return $this->db->query("SELECT * FROM transaksi WHERE kode = '3A' OR kode = '4A'")->result();
   }
+  public function getPemasukanByNoRef($no_ref)
+  {
+    return $this->db->where('no_ref', $no_ref)->get("transaksi")->row();
+  }
 
   // INSERT METHOD
   public function addBayarBulanan($data)
@@ -205,6 +209,29 @@ class BendaharaModel extends CI_Model
     ]);
 
     return $addPengeluaran;
+  }
+
+  // UPDATE METHOD
+  public function ubahPemasukanLainnya($data)
+  {
+    $count = 0;
+
+    $checkBilling = $this->db->where("no_ref", $data["noRef"])->get("transaksi");
+    $count = $checkBilling->num_rows();
+
+    if ($count < 1) {
+      return false;
+    } else {
+
+      $updatePemasukan = $this->db->where("no_ref", $data["noRef"])->update("transaksi", [
+        "tanggal" => $data["tanggalTransaksi"],
+        "keterangan" => $data["keterangan"],
+        "nominal" => $data["nominalTransaksi"],
+        "id_petugas" => $data["idPetugas"]
+      ]);
+
+      return $updatePemasukan;
+    }
   }
 
   // DELETE METHOD
