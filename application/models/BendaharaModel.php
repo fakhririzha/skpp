@@ -113,6 +113,10 @@ class BendaharaModel extends CI_Model
   {
     return $this->db->where('no_ref', $no_ref)->get("transaksi")->row();
   }
+  public function getHistoriPengeluaran()
+  {
+    return $this->db->query("SELECT * FROM transaksi WHERE kode LIKE '%B'")->result();
+  }
 
   // INSERT METHOD
   public function addBayarBulanan($data)

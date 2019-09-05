@@ -315,6 +315,71 @@ class Bendahara extends CI_Controller
       redirect("bendahara/histori");
     }
   }
+  public function aturPengeluaran()
+  {
+    $data = [
+      "content" => 'bendahara/pages/aturPengeluaran',
+      "historiPemasukan" => $this->BendaharaModel->getHistoriPengeluaran(),
+      "cssFiles" => ["datatables.min.css"],
+      "jsFiles" => ["datatables.min.js"]
+    ];
+    $this->load->view('bendahara/index', $data);
+  }
+  public function ubahPengeluaran()
+  {
+    if ($this->input->post("ubahPemasukanLainnya")) {
+      $nominal = $this->input->post("nominalTransaksi");
+      $nominal = str_replace("Rp ", "", $nominal);
+      $nominal = str_replace(",", "", $nominal);
+      if ($this->input->post("kodeTransaksi") != "4A") {
+        $data = [
+          "noRef" => $this->input->post("noRef"),
+          "keterangan" => $this->input->post("keterangan"),
+          "tanggalTransaksi" => $this->input->post("tanggalTransaksi"),
+          "nominalTransaksi" => $nominal,
+          "status" => 'bukabuku',
+          "idPetugas" => $this->session->id
+        ];
+      } else {
+        $data = [
+          "noRef" => $this->input->post("noRef"),
+          "keterangan" => $this->input->post("keterangan"),
+          "tanggalTransaksi" => "1970-01-01",
+          "nominalTransaksi" => $nominal,
+          "status" => 'bukabuku',
+          "idPetugas" => $this->session->id
+        ];
+      }
+
+      if ($this->BendaharaModel->ubahPemasukanLainnya($data)) {
+        $this->session->set_flashdata('suksesMsg', 'Berhasil mengubah pemasukan.');
+      } else {
+        $this->session->set_flashdata('actionMsg', 'Gagal mengubah pemasukan. Silahkan coba lagi.');
+      }
+      redirect("bendahara/aturPemasukan");
+    } else {
+      $no_ref = $this->input->get("no_ref");
+
+      $data = [
+        "content" => 'bendahara/pages/ubahPemasukanLainnya',
+        "pemasukan" => $this->BendaharaModel->getPemasukanByNoRef($no_ref),
+        "cssFiles" => ["gijgo.min.css"],
+        "jsFiles" => ["cleave.min.js", "gijgo.min.js"]
+      ];
+      $this->load->view('bendahara/index', $data);
+    }
+  }
+  public function hapusPengeluaran()
+  {
+    $no_ref = $this->input->get("no_ref");
+
+    if ($this->BendaharaModel->hapusPemasukanLainnya($no_ref) > 0) {
+      $this->session->set_flashdata('suksesMsg', 'Sukses menghapus transaksi pemasukan dengan No. Ref : ' . $no_ref . '.');
+    } else {
+      $this->session->set_flashdata('actionMsg', 'Gagal menghapus transaksi pemasukan. Silahkan coba lagi.');
+    }
+    redirect("bendahara/aturPemasukan");
+  }
 
   public function histori()
   {

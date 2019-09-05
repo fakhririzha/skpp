@@ -85,6 +85,12 @@
             </a>
           </li>
           <li>
+            <a href="<?= base_url() ?>bendahara/aturPengeluaran">
+              <i class="now-ui-icons shopping_cart-simple"></i>
+              <p>Atur Pengeluaran</p>
+            </a>
+          </li>
+          <li>
             <a href="<?= base_url() ?>bendahara/laporan">
               <i class="now-ui-icons business_chart-bar-32"></i>
               <p>Laporan</p>
