@@ -287,4 +287,11 @@ class BendaharaModel extends CI_Model
 
     return $count;
   }
+  public function hapusPengeluaran($no_ref)
+  {
+    $this->db->where("no_ref", $no_ref)->delete("transaksi");
+    $count = $this->db->affected_rows();
+
+    return $count;
+  }
 }

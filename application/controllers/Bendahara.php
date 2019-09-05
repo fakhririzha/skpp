@@ -363,12 +363,12 @@ class Bendahara extends CI_Controller
   {
     $no_ref = $this->input->get("no_ref");
 
-    if ($this->BendaharaModel->hapusPemasukanLainnya($no_ref) > 0) {
-      $this->session->set_flashdata('suksesMsg', 'Sukses menghapus transaksi pemasukan dengan No. Ref : ' . $no_ref . '.');
+    if ($this->BendaharaModel->hapusPengeluaran($no_ref) > 0) {
+      $this->session->set_flashdata('suksesMsg', 'Sukses menghapus transaksi pengeluaran dengan No. Ref : ' . $no_ref . '.');
     } else {
-      $this->session->set_flashdata('actionMsg', 'Gagal menghapus transaksi pemasukan. Silahkan coba lagi.');
+      $this->session->set_flashdata('actionMsg', 'Gagal menghapus transaksi pengeluaran. Silahkan coba lagi.');
     }
-    redirect("bendahara/aturPemasukan");
+    redirect("bendahara/aturPengeluaran");
   }
 
   public function histori()
