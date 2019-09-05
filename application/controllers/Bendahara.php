@@ -212,6 +212,16 @@ class Bendahara extends CI_Controller
       $this->load->view('bendahara/index', $data);
     }
   }
+  public function aturPemasukan()
+  {
+    $data = [
+      "content" => 'bendahara/pages/aturPemasukan',
+      "historiPemasukan" => $this->BendaharaModel->getHistoriPemasukan(),
+      "cssFiles" => ["datatables.min.css"],
+      "jsFiles" => ["datatables.min.js"]
+    ];
+    $this->load->view('bendahara/index', $data);
+  }
 
   public function pengeluaran()
   {

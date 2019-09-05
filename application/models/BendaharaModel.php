@@ -105,6 +105,10 @@ class BendaharaModel extends CI_Model
   {
     return $this->db->query("SELECT SUM(nominal) AS jumlah FROM transaksi WHERE kode = '$kode' AND tanggal BETWEEN '$tanggalAsli' AND '$sebulan'")->row();
   }
+  public function getHistoriPemasukan()
+  {
+    return $this->db->query("SELECT * FROM transaksi WHERE kode = '3A' OR kode = '4A'")->result();
+  }
 
   // INSERT METHOD
   public function addBayarBulanan($data)

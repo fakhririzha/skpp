@@ -93,6 +93,15 @@ $(document).ready(function () {
     });
   }
 
+  if ($("#histori-pemasukan").length) {
+    $("#histori-pemasukan").dataTable({
+      'columnDefs': [
+        { 'orderable': false, 'targets': [4, 5, 6, 7] },
+        { 'searchable': false, 'targets': [0, 1, 2, 3, 5, 6, 7] }
+      ]
+    });
+  }
+
   if ($("#number-input").length) {
     new Cleave("#number-input", {
       prefix: 'Rp ',

@@ -67,6 +67,12 @@
             </a>
           </li>
           <li>
+            <a href="<?= base_url() ?>bendahara/aturPemasukan">
+              <i class="now-ui-icons business_money-coins"></i>
+              <p>Atur Pemasukan</p>
+            </a>
+          </li>
+          <li>
             <a href="<?= base_url() ?>bendahara/histori">
               <i class="fas fa-history"></i>
               <p>Histori Transaksi</p>
