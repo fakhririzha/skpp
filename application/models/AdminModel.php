@@ -166,6 +166,7 @@ class AdminModel extends CI_Model
     $count = 0;
     if ($data["sttb"] != $data["oldSttb"]) {
       $checkSiswa = $this->db->where("sttb", $data["sttb"])->get("siswa");
+      $kelas = $checkSiswa->row()->kode_kelas;
       $count = $checkSiswa->num_rows();
     } else {
       $count = 0;
@@ -180,6 +181,10 @@ class AdminModel extends CI_Model
         "kode_kelas" => $data["kodeKelas"],
         "jenis_kelamin" => $data["jenisKelamin"],
         "status" => $data["status"]
+      ]);
+
+      $updatePembagianKelas = $this->db->where("sttb", $data["sttb"])->where("kode_kelas", $kelas)->update("pembagian_kelas", [
+        "kode_kelas" => $data["kodeKelas"]
       ]);
 
       return $updateSiswa;
