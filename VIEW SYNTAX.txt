@@ -117,3 +117,52 @@ GROUP BY
 
 ====================================================================================
 
+CREATE EVENT `updateKelasSiswa`
+ON SCHEDULE EVERY 1 YEAR STARTS '2020-07-01 00:00:00.000000'
+ON COMPLETION NOT PRESERVE ENABLE
+DO
+BEGIN
+UPDATE siswa SET siswa.kode_kelas = '' WHERE siswa.kode_kelas NOT LIKE 'XII%';
+UPDATE siswa SET siswa.kode_kelas = 'tamat' WHERE siswa.kode_kelas LIKE 'XII%';
+UPDATE pembagian_kelas SET pembagian_kelas.kode_kelas = '', pembagian_kelas.status = 'nonaktif' WHERE pembagian_kelas.kode_kelas LIKE 'XII%';
+END
+
+====================================================================================
+
+EVENT UNTUK UPDATE KODEKELAS SISWA JADI KOSONG
+
+BEGIN
+UPDATE
+	siswa
+SET
+	siswa.kode_kelas = ''
+WHERE
+	siswa.kode_kelas NOT LIKE 'XII%';
+
+UPDATE
+	siswa
+SET
+	siswa.kode_kelas = 'tamat'
+WHERE
+	siswa.kode_kelas LIKE 'XII%';
+    
+UPDATE
+	pembagian_kelas
+SET
+	pembagian_kelas.kode_kelas = '',
+    pembagian_kelas.status = 'nonaktif'
+WHERE
+	pembagian_kelas.kode_kelas LIKE 'XII%';
+END
+
+====================================================================================
+
+CREATE OR REPLACE VIEW vTunggakanSiswaBulanan AS
+SELECT bulanan.sttb, siswa.nama, siswa.kode_kelas, bulanan.tahun_akademik, bulanan.semester, bulanan.tanggal, bulanan.nominal, (MAX(bulanan.bulan_bayar)) AS bulan_bayar FROM bulanan, siswa WHERE bulanan.sttb = siswa.sttb GROUP BY sttb;
+
+====================================================================================
+
+CREATE OR REPLACE VIEW vTunggakanSiswaTahunan AS
+SELECT tahunan.sttb, siswa.nama, siswa.kode_kelas, tahunan.tahun_akademik, (SUM(tahunan.nominal)) AS nominal, kelas.iuran_tahunan FROM tahunan, kelas, siswa
+WHERE tahunan.sttb = siswa.sttb AND siswa.kode_kelas = kelas.kode_kelas
+GROUP BY sttb;

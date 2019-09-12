@@ -111,6 +111,15 @@ $(document).ready(function () {
     });
   }
 
+  if ($("#tunggakan").length) {
+    $("#tunggakan").dataTable({
+      'columnDefs': [
+        { 'orderable': false, 'targets': [1, 2] },
+        { 'searchable': false, 'targets': [1, 2] }
+      ]
+    });
+  }
+
   if ($("#number-input").length) {
     new Cleave("#number-input", {
       prefix: 'Rp ',

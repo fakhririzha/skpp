@@ -121,6 +121,22 @@ class BendaharaModel extends CI_Model
   {
     return $this->db->where('no_ref', $no_ref)->get("transaksi")->row();
   }
+  public function getTahunAkademikAktif()
+  {
+    return $this->db->query("SELECT tahun_akademik FROM kelas LIMIT 1")->row();
+  }
+  public function getAllTunggakanSiswaBulanan()
+  {
+    $tahun_akademik = $this->getTahunAkademikAktif()->tahun_akademik;
+
+    return $this->db->where("tahun_akademik", $tahun_akademik)->get("vTunggakanSiswaBulanan")->result();
+  }
+  public function getAllTunggakanSiswaTahunan()
+  {
+    $tahun_akademik = $this->getTahunAkademikAktif()->tahun_akademik;
+
+    return $this->db->where("tahun_akademik", $tahun_akademik)->get("vTunggakanSiswaTahunan")->result();
+  }
 
   // INSERT METHOD
   public function addBayarBulanan($data)

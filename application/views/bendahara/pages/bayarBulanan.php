@@ -78,7 +78,11 @@
             <div class="col-md-12">
               <div class="form-group">
                 <label for="nominalBayar">Nominal Bayar</label>
-                <input type="text" class="form-control" name="nominalBayar" value="<?= $nominalBayar->iuran_bulanan ?>" readonly>
+                <?php if ($nominalBayar->status == "subsidi") : ?>
+                  <input type="text" class="form-control" name="nominalBayar" value="<?= $nominalBayar->iuran_bulanan_subsidi ?>" readonly>
+                <?php else : ?>
+                  <input type="text" class="form-control" name="nominalBayar" value="<?= $nominalBayar->iuran_bulanan ?>" readonly>
+                <?php endif; ?>
               </div>
             </div>
           </div>

@@ -172,6 +172,21 @@ class Bendahara extends CI_Controller
     redirect("bendahara/historiTahunan?sttb=$sttb");
   }
 
+  public function cekTunggakan()
+  {
+    $data = [
+      "cekTunggakanBulanan" => $this->BendaharaModel->getAllTunggakanSiswaBulanan(),
+      // "cekTunggakanTahunan" => $this->BendaharaModel->getAllTunggakanSiswaTahunan(),
+      // "cekTunggakanBulananAwal" => $this->BendaharaModel->getAllTunggakanSiswaBulananAwal(),
+      // "cekTunggakanTahunanAwal" => $this->BendaharaModel->getAllTunggakanSiswaTahunanAwal(),
+      "content" => "bendahara/pages/cekTunggakan",
+      "cssFiles" => ["datatables.min.css"],
+      "jsFiles" => ["datatables.min.js"]
+    ];
+
+    $this->load->view('bendahara/index', $data);
+  }
+
   public function pemasukanLainnya()
   {
     if ($this->input->post("addPemasukanLainnya")) {

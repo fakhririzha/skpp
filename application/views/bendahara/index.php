@@ -67,6 +67,12 @@
             </a>
           </li>
           <li>
+            <a href="<?= base_url() ?>bendahara/cekTunggakan">
+              <i class="now-ui-icons business_money-coins"></i>
+              <p>Cek Tunggakan</p>
+            </a>
+          </li>
+          <li>
             <a href="<?= base_url() ?>bendahara/aturPemasukan">
               <i class="now-ui-icons business_money-coins"></i>
               <p>Atur Pemasukan</p>
