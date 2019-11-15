@@ -55,6 +55,12 @@
             </a>
           </li>
           <li>
+            <a href="<?= base_url() ?>bendahara/bulananKeseluruhan">
+              <i class="now-ui-icons business_money-coins"></i>
+              <p>Iuran Bulanan - Semua</p>
+            </a>
+          </li>
+          <li>
             <a href="<?= base_url() ?>bendahara/tahunan">
               <i class="now-ui-icons business_money-coins"></i>
               <p>Iuran Tahunan</p>

@@ -55,6 +55,18 @@ class Bendahara extends CI_Controller
 
     $this->load->view('bendahara/index', $data);
   }
+  public function bulananKeseluruhan()
+  {
+    $data = [
+      "kelass" => $this->BendaharaModel->getAllKelas(),
+      "content" => "bendahara/pages/bulananKeseluruhan",
+      "cssFiles" => ["datatables.min.css"],
+      "jsFiles" => ["datatables.min.js"],
+      "siswas" => $this->BendaharaModel->getSiswaAll()
+    ];
+
+    $this->load->view('bendahara/index', $data);
+  }
   public function bayarBulanan()
   {
     if ($this->input->post("bayarBulanan")) {
@@ -174,16 +186,26 @@ class Bendahara extends CI_Controller
 
   public function cekTunggakan()
   {
-    $data = [
-      "cekTunggakanBulanan" => $this->BendaharaModel->getAllTunggakanSiswaBulanan(),
-      // "cekTunggakanTahunan" => $this->BendaharaModel->getAllTunggakanSiswaTahunan(),
-      // "cekTunggakanBulananAwal" => $this->BendaharaModel->getAllTunggakanSiswaBulananAwal(),
-      // "cekTunggakanTahunanAwal" => $this->BendaharaModel->getAllTunggakanSiswaTahunanAwal(),
-      "content" => "bendahara/pages/cekTunggakan",
-      "cssFiles" => ["datatables.min.css"],
-      "jsFiles" => ["datatables.min.js"]
-    ];
-
+    if ($this->input->post("filterBulanTunggakan")) {
+      $data = [
+        "tahun_akademik" => $this->BendaharaModel->getTahunAkademikAktif(),
+        "cekTunggakanBulanan" => $this->BendaharaModel->getAllTunggakanSiswaBulanan(),
+        "cekTunggakanTahunan" => $this->BendaharaModel->getAllTunggakanSiswaTahunan(),
+        "bulanMaks" => $this->input->post("bulan"),
+        // "cekTunggakanBulananAwal" => $this->BendaharaModel->getAllTunggakanSiswaBulananAwal(),
+        // "cekTunggakanTahunanAwal" => $this->BendaharaModel->getAllTunggakanSiswaTahunanAwal(),
+        "content" => "bendahara/pages/cekTunggakan",
+        "cssFiles" => ["datatables.min.css"],
+        "jsFiles" => ["datatables.min.js"]
+      ];
+    } else {
+      $data = [
+        "tahun_akademik" => $this->BendaharaModel->getTahunAkademikAktif(),
+        "content" => "bendahara/pages/cekTunggakan",
+        "cssFiles" => ["datatables.min.css"],
+        "jsFiles" => ["datatables.min.js"]
+      ];
+    }
     $this->load->view('bendahara/index', $data);
   }
 

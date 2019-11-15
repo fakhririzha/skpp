@@ -25,6 +25,10 @@ class BendaharaModel extends CI_Model
   {
     return $this->db->get("kelas")->result();
   }
+  public function getSiswaAll()
+  {
+    return $this->db->get("vsiswakelas")->result();
+  }
   public function getSiswaByKelas($kelas)
   {
     return $this->db->where("kode_kelas", $kelas)->get("vsiswakelas")->result();

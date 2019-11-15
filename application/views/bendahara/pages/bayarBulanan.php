@@ -92,18 +92,18 @@
                 <label for="bulanBayar">Bulan Bayar</label>
                 <select name="bulanBayar" class="custom-select form-control" required>
                   <option value="">Pilih bulan</option>
-                  <option value="7">Juli</option>
-                  <option value="8">Agustus</option>
-                  <option value="9">September</option>
-                  <option value="10">Oktober</option>
-                  <option value="11">November</option>
-                  <option value="12">Desember</option>
-                  <option value="1">Januari</option>
-                  <option value="2">Februari</option>
-                  <option value="3">Maret</option>
-                  <option value="4">April</option>
-                  <option value="5">Mei</option>
-                  <option value="6">Juni</option>
+                  <option value="1">Juli</option>
+                  <option value="2">Agustus</option>
+                  <option value="3">September</option>
+                  <option value="4">Oktober</option>
+                  <option value="5">November</option>
+                  <option value="6">Desember</option>
+                  <option value="7">Januari</option>
+                  <option value="8">Februari</option>
+                  <option value="9">Maret</option>
+                  <option value="10">April</option>
+                  <option value="11">Mei</option>
+                  <option value="12">Juni</option>
                 </select>
               </div>
             </div>

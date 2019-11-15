@@ -137,14 +137,14 @@ UPDATE
 SET
 	siswa.kode_kelas = ''
 WHERE
-	siswa.kode_kelas NOT LIKE 'XII%';
+	siswa.kode_kelas NOT LIKE '6%';
 
 UPDATE
 	siswa
 SET
 	siswa.kode_kelas = 'tamat'
 WHERE
-	siswa.kode_kelas LIKE 'XII%';
+	siswa.kode_kelas LIKE '6%';
     
 UPDATE
 	pembagian_kelas
@@ -152,7 +152,7 @@ SET
 	pembagian_kelas.kode_kelas = '',
     pembagian_kelas.status = 'nonaktif'
 WHERE
-	pembagian_kelas.kode_kelas LIKE 'XII%';
+	pembagian_kelas.kode_kelas LIKE '6%';
 END
 
 ====================================================================================
@@ -166,3 +166,19 @@ CREATE OR REPLACE VIEW vTunggakanSiswaTahunan AS
 SELECT tahunan.sttb, siswa.nama, siswa.kode_kelas, tahunan.tahun_akademik, (SUM(tahunan.nominal)) AS nominal, kelas.iuran_tahunan FROM tahunan, kelas, siswa
 WHERE tahunan.sttb = siswa.sttb AND siswa.kode_kelas = kelas.kode_kelas
 GROUP BY sttb;
+
+====================================================================================
+
+CREATE OR REPLACE VIEW vTunggakanSiswaBulananAwal AS
+SELECT siswa.* FROM siswa
+LEFT JOIN bulanan
+ON siswa.sttb = bulanan.sttb
+WHERE bulanan.sttb IS NULL AND bulanan.tahun_akademik = (SELECT kelas.tahun_akademik FROM kelas ORDER BY tahun_akademik DESC LIMIT 1);
+
+====================================================================================
+
+CREATE OR REPLACE VIEW vTunggakanSiswaTahunanAwal AS
+SELECT siswa.* FROM siswa
+LEFT JOIN tahunan
+ON siswa.sttb = tahunan.sttb
+WHERE tahunan.sttb IS NULL
