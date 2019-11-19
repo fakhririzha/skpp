@@ -1,6 +1,10 @@
 CREATE OR REPLACE VIEW vSiswaKelas AS
 SELECT s.sttb, s.nama, s.kode_kelas, s.status, k.semester, k.tahun_akademik, k.iuran_bulanan, k.iuran_bulanan_subsidi, k.iuran_tahunan FROM siswa s LEFT JOIN kelas k ON s.kode_kelas = k.kode_kelas;
 
+REVISI :
+CREATE OR REPLACE VIEW vSiswaKelas AS
+SELECT s.sttb, s.nama, s.kode_kelas, s.status, k.semester, k.tahun_akademik, k.iuran_bulanan, k.iuran_bulanan_subsidi, k.iuran_bulanan_warga_sekitar, k.iuran_bulanan_saudara1, k.iuran_bulanan_saudara2, k.iuran_bulanan_saudara3, k.iuran_bulanan_saudara4, k.iuran_bulanan_saudara5, k.iuran_bulanan_beasiswa, k.iuran_bulanan_laziswa, k.iuran_tahunan FROM siswa s LEFT JOIN kelas k ON s.kode_kelas = k.kode_kelas;
+
 ====================================================================================
 
 CREATE OR REPLACE VIEW vHistoriTransaksi AS

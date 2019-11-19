@@ -80,7 +80,14 @@
                     <label for="status">Status</label>
                     <select name="status" class="custom-select form-control" required>
                       <option value="">Pilih status subsidi</option>
-                      <option value="subsidi">Subsidi</option>
+                      <option value="wargasekitar">Warga Setempat</option>
+                      <option value="saudara1">Saudara 1</option>
+                      <option value="saudara2">Saudara 2</option>
+                      <option value="saudara3">Saudara 3</option>
+                      <option value="saudara4">Saudara 4</option>
+                      <option value="saudara5">Saudara 5</option>
+                      <option value="beasiswa">Beasiswa</option>
+                      <option value="laziswa">Laziswa</option>
                       <option value="non-subsidi">Non-subsidi</option>
                     </select>
                   </div>
