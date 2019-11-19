@@ -80,6 +80,22 @@
                 <label for="nominalBayar">Nominal Bayar</label>
                 <?php if ($nominalBayar->status == "subsidi") : ?>
                   <input type="text" class="form-control" name="nominalBayar" value="<?= $nominalBayar->iuran_bulanan_subsidi ?>" readonly>
+                <?php else if ($nominalBayar->status == "wargasekitar") : ?>
+                  <input type="text" class="form-control" name="nominalBayar" value="<?= $nominalBayar->iuran_bulanan_warga_sekitar ?>" readonly>
+                <?php else if ($nominalBayar->status == "saudara1") : ?>
+                  <input type="text" class="form-control" name="nominalBayar" value="<?= $nominalBayar->iuran_bulanan_saudara1 ?>" readonly>
+                <?php else if ($nominalBayar->status == "saudara2") : ?>
+                  <input type="text" class="form-control" name="nominalBayar" value="<?= $nominalBayar->iuran_bulanan_saudara2 ?>" readonly>
+                <?php else if ($nominalBayar->status == "saudara3") : ?>
+                  <input type="text" class="form-control" name="nominalBayar" value="<?= $nominalBayar->iuran_bulanan_saudara3 ?>" readonly>
+                <?php else if ($nominalBayar->status == "saudara4") : ?>
+                  <input type="text" class="form-control" name="nominalBayar" value="<?= $nominalBayar->iuran_bulanan_saudara4 ?>" readonly>
+                <?php else if ($nominalBayar->status == "saudara5") : ?>
+                  <input type="text" class="form-control" name="nominalBayar" value="<?= $nominalBayar->iuran_bulanan_saudara5 ?>" readonly>
+                <?php else if ($nominalBayar->status == "beasiswa") : ?>
+                  <input type="text" class="form-control" name="nominalBayar" value="<?= $nominalBayar->iuran_bulanan_beasiswa ?>" readonly>
+                <?php else if ($nominalBayar->status == "laziswa") : ?>
+                  <input type="text" class="form-control" name="nominalBayar" value="<?= $nominalBayar->iuran_bulanan_laziswa ?>" readonly>
                 <?php else : ?>
                   <input type="text" class="form-control" name="nominalBayar" value="<?= $nominalBayar->iuran_bulanan ?>" readonly>
                 <?php endif; ?>
